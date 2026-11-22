@@ -1,14 +1,14 @@
 <!-- بنر اصلی -->
 <p align="center">
-  <img src="assets/termufix-banner.svg" alt="بنر Termufix با تم مشکی و نارنجی" width="100%">
+  <img src="https://github.com/aishervin/Xrayng/blob/main/app/src/main/ic_launcher-web.png" alt="بنر Termufix با تم مشکی و نارنجی" width="100%">
 </p>
 
 <h1 align="center">TERMUFIX · SHΞN™</h1>
 <p align="center" dir="rtl"><strong>پل ساده‌ای برای وصل کردن ایجنت هوش مصنوعی به ترموکس گوشی شما</strong></p>
 <p align="center" dir="rtl">
-  <a href="https://termufix.pages.dev">ورود به سایت</a>
+  <a href="https://termufix.pages.dev">WEB APP</a>
   &nbsp; | &nbsp;
-  <a href="https://github.com/aishervin/Termufix">مخزن پروژه</a>
+  <a href="https://github.com/aishervin/Termufix">SOURCE</a>
 </p>
 
 ---
