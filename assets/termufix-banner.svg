@@ -1,0 +1,50 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="560" viewBox="0 0 1600 560">
+<defs>
+ <linearGradient id="a" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#ffb347"/><stop offset=".55" stop-color="#ff7900"/><stop offset="1" stop-color="#d94a00"/></linearGradient>
+ <radialGradient id="g"><stop stop-color="#ff7900" stop-opacity=".2"/><stop offset="1" stop-color="#ff7900" stop-opacity="0"/></radialGradient>
+ <pattern id="p" width="48" height="48" patternUnits="userSpaceOnUse"><path d="M48 0H0V48" fill="none" stroke="#ff8a20" stroke-opacity=".08"/></pattern>
+ <filter id="s" x="-30%" y="-30%" width="160%" height="160%"><feGaussianBlur stdDeviation="16"/></filter>
+</defs>
+<rect width="1600" height="560" rx="24" fill="#090a0c"/>
+<rect width="1600" height="560" rx="24" fill="url(#p)"/>
+<ellipse cx="1240" cy="260" rx="420" ry="300" fill="url(#g)"/>
+<path d="M0 0H330L0 150Z" fill="url(#a)"/>
+<path d="M1600 560h-280l280-175z" fill="url(#a)"/>
+<g transform="translate(80 132)">
+ <path d="M0 0h126l-24 29H0zM0 46h92l-23 28H0zM0 92h58l-23 28H0z" fill="url(#a)"/>
+ <path d="M30 142 143 0h44L75 170H30z" fill="#ff7a00"/>
+ <path d="M94 170 198 0h30L125 170z" fill="#ffb347"/>
+</g>
+<text x="350" y="218" fill="#f7f7f8" font-family="Arial,sans-serif" font-size="104" font-weight="800" letter-spacing="1">TERMU<tspan fill="#ff8a1c">FIX</tspan></text>
+<text x="356" y="276" fill="#d9d9dc" font-family="Arial,sans-serif" font-size="31">A simple bridge from your phone to your AI agent</text>
+<text x="358" y="322" fill="#ff9a36" font-family="Arial,sans-serif" font-size="18" font-weight="700" letter-spacing="5">SHΞN™  /  TERMUX SESSION RELAY</text>
+<!-- clean terminal card -->
+<g transform="translate(1000 94)">
+ <rect x="0" y="0" width="360" height="260" rx="22" fill="#ff7900" opacity=".12" filter="url(#s)"/>
+ <rect x="0" y="0" width="360" height="260" rx="22" fill="#111317" stroke="#5a351c" stroke-width="2"/>
+ <path d="M0 48h360" stroke="#35373d"/>
+ <circle cx="26" cy="24" r="6" fill="#ff6b45"/><circle cx="48" cy="24" r="6" fill="#ffb347"/><circle cx="70" cy="24" r="6" fill="#68c987"/>
+ <text x="28" y="92" fill="#ff9a36" font-family="monospace" font-size="21">$ termufix</text>
+ <text x="28" y="134" fill="#f3f3f4" font-family="monospace" font-size="19">Private session ready</text>
+ <text x="28" y="176" fill="#80dda0" font-family="monospace" font-size="17">● waiting for agent</text>
+ <path d="M28 205h130" stroke="#ff8a1c" stroke-width="3" stroke-linecap="round"/>
+</g>
+<!-- connected agent -->
+<path d="M1360 226h88" stroke="#ff8a1c" stroke-width="4" stroke-linecap="round"/>
+<circle cx="1390" cy="226" r="5" fill="#ffb347"/>
+<g transform="translate(1490 224)" stroke="url(#a)" stroke-width="7" fill="none" stroke-linecap="round" stroke-linejoin="round">
+ <rect x="-58" y="-50" width="116" height="92" rx="25"/>
+ <path d="M0 -50v-25m-12 0h24"/>
+ <circle cx="-22" cy="-5" r="7" fill="#ff9a36" stroke="none"/><circle cx="22" cy="-5" r="7" fill="#ff9a36" stroke="none"/>
+ <path d="M-18 20q18 12 36 0M-35 42v35m70-35v35M-35 77h70"/>
+</g>
+<g font-family="Arial,sans-serif" font-size="22" font-weight="700">
+ <g transform="translate(100 430)"><circle cx="24" cy="0" r="22" fill="#191b20" stroke="#ff8a1c" stroke-width="3"/><text x="24" y="8" text-anchor="middle" fill="#ffad50">1</text><text x="62" y="8" fill="#f5f5f6">Run in Termux</text></g>
+ <path d="M490 430h60m-14-13 14 13-14 13" stroke="#ff8a1c" stroke-width="4" fill="none" stroke-linecap="round"/>
+ <g transform="translate(610 430)"><circle cx="24" cy="0" r="22" fill="#191b20" stroke="#ff8a1c" stroke-width="3"/><text x="24" y="8" text-anchor="middle" fill="#ffad50">2</text><text x="62" y="8" fill="#f5f5f6">Share your private link</text></g>
+ <path d="M1050 430h60m-14-13 14 13-14 13" stroke="#ff8a1c" stroke-width="4" fill="none" stroke-linecap="round"/>
+ <g transform="translate(1170 430)"><circle cx="24" cy="0" r="22" fill="#191b20" stroke="#ff8a1c" stroke-width="3"/><text x="24" y="8" text-anchor="middle" fill="#ffad50">3</text><text x="62" y="8" fill="#f5f5f6">Let your agent work</text></g>
+</g>
+<path d="M80 492H1520" stroke="#ff8a1c" stroke-opacity=".35"/>
+<text x="800" y="530" text-anchor="middle" fill="#999ba2" font-family="Arial,sans-serif" font-size="15" font-weight="700" letter-spacing="6">CONNECT  •  INSTALL  •  CONFIGURE  •  REPAIR</text>
+</svg>

@@ -1,0 +1,53 @@
+CREATE TABLE IF NOT EXISTS join_tokens (
+  token TEXT PRIMARY KEY,
+  label TEXT NOT NULL DEFAULT '',
+  created INTEGER NOT NULL,
+  expires INTEGER NOT NULL,
+  enrolls INTEGER NOT NULL DEFAULT 0
+);
+CREATE TABLE IF NOT EXISTS sessions (
+  sid TEXT PRIMARY KEY,
+  session_key_hash TEXT NOT NULL,
+  join_token TEXT NOT NULL,
+  label TEXT NOT NULL DEFAULT '',
+  model TEXT NOT NULL DEFAULT '',
+  android TEXT NOT NULL DEFAULT '',
+  arch TEXT NOT NULL DEFAULT '',
+  termux TEXT NOT NULL DEFAULT '',
+  packages TEXT NOT NULL DEFAULT '',
+  note TEXT NOT NULL DEFAULT '',
+  created INTEGER NOT NULL,
+  last_seen INTEGER NOT NULL,
+  status TEXT NOT NULL DEFAULT 'idle',
+  cmd_id INTEGER NOT NULL DEFAULT 0,
+  ack INTEGER NOT NULL DEFAULT 0,
+  command TEXT NOT NULL DEFAULT '',
+  output TEXT NOT NULL DEFAULT '',
+  exit_code INTEGER,
+  updated INTEGER NOT NULL
+);
+CREATE INDEX IF NOT EXISTS idx_sessions_created ON sessions (created DESC);
+CREATE TABLE IF NOT EXISTS events (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  sid TEXT NOT NULL,
+  ts INTEGER NOT NULL,
+  type TEXT NOT NULL,
+  data TEXT NOT NULL DEFAULT ''
+);
+CREATE INDEX IF NOT EXISTS idx_events_sid ON events (sid, id);
+CREATE TABLE IF NOT EXISTS claims (
+  claim_id TEXT PRIMARY KEY,
+  name TEXT NOT NULL DEFAULT '',
+  created INTEGER NOT NULL,
+  expires INTEGER NOT NULL,
+  sid TEXT,
+  session_key TEXT,
+  last_seen INTEGER NOT NULL DEFAULT 0
+);
+CREATE INDEX IF NOT EXISTS idx_claims_created ON claims (created DESC);
+CREATE TABLE IF NOT EXISTS starts (
+  id INTEGER PRIMARY KEY AUTOINCREMENT,
+  ip TEXT NOT NULL DEFAULT '',
+  ts INTEGER NOT NULL
+);
+CREATE INDEX IF NOT EXISTS idx_starts_ip_ts ON starts (ip, ts);

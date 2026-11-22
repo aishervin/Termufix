@@ -1,0 +1,206 @@
+#!/data/data/com.termux/files/usr/bin/bash
+# Termufix operator helper.
+# Reads TERMUFIX_ADMIN_TOKEN from ~/.config/termufix/env.
+set -u
+
+ENV_FILE="${TERMUFIX_ENV:-$HOME/.config/termufix/env}"
+RELAY="${TERMUFIX_RELAY:-https://termufix.pages.dev}"
+if [ -f "$ENV_FILE" ]; then
+  set -a
+  # shellcheck disable=SC1090
+  . "$ENV_FILE"
+  set +a
+fi
+ADMIN="${TERMUFIX_ADMIN_TOKEN:-}"
+
+say() { printf '%s\n' "$*"; }
+die() { printf 'termufix: %s\n' "$*" >&2; exit 1; }
+
+need_admin() {
+  [ -n "$ADMIN" ] || die "TERMUFIX_ADMIN_TOKEN is not set in $ENV_FILE"
+}
+
+need_url() {
+  [ -n "${1:-}" ] || die "missing session URL"
+  case "$1" in
+    "$RELAY"/s/*) ;;
+    *) die "session URL must start with $RELAY/s/" ;;
+  esac
+}
+
+json_get() {
+  node -e '
+    let s="";
+    process.stdin.on("data",d=>s+=d).on("end",()=>{
+      try { const j=JSON.parse(s); const v=eval(process.argv[1]); if(v!==undefined && v!==null) console.log(v); }
+      catch(e){ process.exit(1); }
+    });
+  ' "$1"
+}
+
+cmd_new() {
+  need_admin
+  local label="${1:-user}" hours="${2:-24}"
+  local body resp
+  body="$(node -e 'console.log(JSON.stringify({label:process.argv[1],hours:Number(process.argv[2])}))' "$label" "$hours")"
+  resp="$(curl -fsS -X POST "$RELAY/admin/token" \
+    -H "Authorization: Bearer $ADMIN" \
+    -H 'content-type: application/json' \
+    --data "$body")" || die "could not create token"
+  printf '%s' "$resp" | node -e '
+      let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{
+        const j=JSON.parse(s);
+        console.log("label:   "+j.label);
+        console.log("expires: "+new Date(j.expires*1000).toISOString());
+        console.log("command: "+j.command);
+        console.log("url:     "+j.url);
+      });
+    '
+}
+
+cmd_alias() {
+  need_admin
+  local name="${1:-}"
+  [ -n "$name" ] || die "usage: termufix alias <name>"
+  local body resp
+  body="$(node -e 'console.log(JSON.stringify({alias:process.argv[1],label:process.argv[1],forever:true}))' "$name")"
+  resp="$(curl -fsS -X POST "$RELAY/admin/token" \
+    -H "Authorization: Bearer $ADMIN" \
+    -H 'content-type: application/json' \
+    --data "$body")" || die "could not create alias"
+  printf '%s' "$resp" | node -e '
+      let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{
+        const j=JSON.parse(s);
+        console.log("alias:   "+j.token+"  (permanent)");
+        console.log("command: "+j.command);
+        console.log("url:     "+j.url);
+      });
+    '
+}
+
+cmd_revoke() {
+  need_admin
+  local token="${1:-}"
+  [ -n "$token" ] || die "usage: termufix revoke <token-or-alias>"
+  local body
+  body="$(node -e 'console.log(JSON.stringify({token:process.argv[1]}))' "$token")"
+  curl -fsS -X POST "$RELAY/admin/revoke" \
+    -H "Authorization: Bearer $ADMIN" \
+    -H 'content-type: application/json' \
+    --data "$body" >/dev/null && say "revoked: $token"
+}
+
+cmd_sessions() {
+  need_admin
+  curl -fsS "$RELAY/admin/sessions" -H "Authorization: Bearer $ADMIN" | node -e '
+    let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{
+      const j=JSON.parse(s);
+      const rows=j.sessions||[];
+      if(!rows.length){ console.log("(no sessions yet)"); return; }
+      for(const r of rows){
+        const t=new Date(r.created*1000).toISOString().replace("T"," ").slice(0,16);
+        console.log(`${r.sid}  ${r.status.padEnd(8)}  ${t}  ${r.model||"?"}  ${r.android||""} ${r.arch||""}`);
+      }
+    });
+  '
+}
+
+cmd_state() {
+  need_url "${1:-}"
+  local url="$1"
+  curl -fsS "$url/state" | node -e '
+    let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{
+      const j=JSON.parse(s);
+      console.log("sid:     "+j.sid);
+      console.log("status:  "+j.status+(j.online?" · online":" · offline"));
+      console.log("device:  "+[j.model,j.android,j.arch,j.termux].filter(Boolean).join(" · "));
+      console.log("cmd:     "+j.cmd_id+"  ack: "+j.ack+"  exit: "+(j.exit_code==null?"-":j.exit_code));
+      console.log("--- output ---");
+      console.log(j.output||"(empty)");
+    });
+  '
+}
+
+cmd_send() {
+  local url="${1:-}"; shift || true
+  need_url "$url"
+  local cmd="$*"
+  [ -n "$cmd" ] || die "missing command"
+  curl -fsS -X POST "$url/cmd" \
+    -H 'content-type: application/x-www-form-urlencoded' \
+    --data-urlencode "cmd=$cmd" | node -e '
+      let s="";process.stdin.on("data",d=>s+=d).on("end",()=>{
+        const j=JSON.parse(s);
+        if(j.ok) console.log("sent: id "+j.id); else console.log(JSON.stringify(j));
+      });
+    '
+}
+
+cmd_run() {
+  local url="${1:-}"; shift || true
+  need_url "$url"
+  local cmd="$*"
+  [ -n "$cmd" ] || die "missing command"
+  local resp id
+  resp="$(curl -fsS -X POST "$url/cmd" \
+    -H 'content-type: application/x-www-form-urlencoded' \
+    --data-urlencode "cmd=$cmd")" || die "could not send command"
+  id="$(printf '%s' "$resp" | json_get 'j.id')"
+  [ -n "$id" ] || die "unexpected response: $resp"
+  say "sent id $id; waiting..."
+  local i=0
+  while [ "$i" -lt 450 ]; do
+    local st ack status out ec
+    st="$(curl -fsS "$url/state" 2>/dev/null)" || { sleep 2; i=$((i+1)); continue; }
+    ack="$(printf '%s' "$st" | json_get 'j.ack' 2>/dev/null || echo 0)"
+    status="$(printf '%s' "$st" | json_get 'j.status' 2>/dev/null || echo '')"
+    if [ "${ack:-0}" -ge "$id" ] 2>/dev/null; then
+      out="$(printf '%s' "$st" | json_get 'j.output' 2>/dev/null || true)"
+      ec="$(printf '%s' "$st" | json_get 'j.exit_code' 2>/dev/null || true)"
+      say "--- output (exit ${ec:-?}) ---"
+      printf '%s\n' "$out"
+      return 0
+    fi
+    if [ "$status" = "closed" ]; then die "session closed"; fi
+    sleep 2
+    i=$((i+1))
+  done
+  die "timed out waiting for command $id"
+}
+
+cmd_close() {
+  need_url "${1:-}"
+  curl -fsS -X POST "$1/close" >/dev/null && say "closed"
+}
+
+cmd_url_help() {
+  cat <<EOF
+termufix <command>
+
+  new [label] [hours]       create a one-time join command (default: 24h)
+  alias <name>              create a permanent named link, e.g. /join/shervin
+  revoke <token|alias>      delete a join token/alias
+  sessions                  list recent sessions
+  state <session-url>       show status and last output
+  send <session-url> <cmd>  send a command
+  run <session-url> <cmd>   send and wait for the output
+  close <session-url>       close the device loop
+  help                      show this help
+
+Relay: $RELAY
+Env:   $ENV_FILE
+EOF
+}
+
+case "${1:-help}" in
+  new) shift; cmd_new "${1:-user}" "${2:-24}" ;;
+  alias) shift; cmd_alias "${1:-}" ;;
+  revoke|delete) shift; cmd_revoke "${1:-}" ;;
+  sessions|ls) cmd_sessions ;;
+  state|info) shift; cmd_state "${1:-}" ;;
+  send) shift; cmd_send "$@" ;;
+  run) shift; cmd_run "$@" ;;
+  close) shift; cmd_close "${1:-}" ;;
+  help|-h|--help) cmd_url_help ;;
+  *) cmd_url_help; exit 1 ;;
+esac

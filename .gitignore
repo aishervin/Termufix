@@ -1,0 +1,6 @@
+.deploy-state.json
+.env
+.test-*
+node_modules/
+.wrangler/
+dist/
