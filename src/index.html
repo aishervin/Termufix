@@ -1286,7 +1286,7 @@
               <rect x="9" y="9" width="11" height="11" rx="2" />
               <path d="M5 15V5a2 2 0 0 1 2-2h10" stroke-linecap="round" />
             </svg>
-            لینک+پرامپت
+            لینک + پرامپت
           </button>
           <button class="icon-btn" id="tgBtn" type="button" disabled>
             <svg viewBox="0 0 24 24" fill="currentColor">
@@ -1299,7 +1299,7 @@
         <p style="font-size:11.5px;color:var(--muted);margin-top:12px;line-height:1.7;direction:rtl">
           گزینهٔ پیشنهادی برای شروع در صورت عدم دسترسی به ایجنت‌بات‌ها، <a href="https://aistudio.google.com"
             target="_blank" rel="noopener" class="rgb-wave" style="font-weight:800;text-decoration:none">استودیوی هوش
-            گوگل (Google AI Studio)</a> است؛ لینک و پرامپت دریافتی را به بخش Builder استودیو منتقل کنید.
+            گوگل (Google AI Studio)</a> است؛ لینک و پرتکل دریافتی را به بخش Builder استودیو منتقل کنید.
         </p>
         <button class="ghost hidden" id="reset2" type="button">شروع اتصال جدید</button>
         <p class="d-note">پنجره‌ی Termux را باز نگه دار · برای توقف <b>Ctrl-C</b> · لینک نهایی فقط برای پشتیبان</p>
@@ -1309,8 +1309,104 @@
   </main>
 
   <footer>
-    <span class="sig">☬ Exclusive <b>SHΞN™</b> made</span>
+    <span class="sig"> Exclusive <b>☬SHΞN™</b> made</span>
   </footer>
+
+  <!-- ============================================================
+       Agent handoff protocol — copied to clipboard by the
+       "لینک + پروتکل" button. Edit the text below to change what
+       every downstream agent receives. Keep <session-url> as the
+       placeholder; it is auto-replaced with the live session link.
+       ============================================================ -->
+  <script type="text/plain" id="agentProtocol">
+# Termufix Session Handoff
+
+**Session URL (secret — never share publicly):**
+
+    <session-url>
+
+Read all of this before acting. Never ask the user for passwords, API keys, or
+other credentials — the session URL above is sufficient.
+
+---
+
+## What this is
+
+Termufix is a short-lived rescue channel into a Termux session on the user's
+Android device. Through it you can inspect the device and run non-interactive
+shell commands, typically to install or repair a terminal AI agent.
+
+## Check access
+
+If you have a `termufix` CLI:
+
+    termufix state '<session-url>'
+
+- `online`  → proceed to diagnose
+- `offline` → wait ~10 s, retry up to 3 times, then tell the user to keep
+  Termux open or rerun the command
+- `expired` → ask for a fresh session link
+
+## Diagnose first (read-only)
+
+Only after `online`, run:
+
+    termufix run '<session-url>' '
+      uname -a;
+      getprop ro.product.model 2>/dev/null;
+      getprop ro.build.version.release 2>/dev/null;
+      df -h "$HOME";
+      command -v opencode && opencode --version 2>&1 || true
+    '
+
+This step changes nothing. No installs, no deletions.
+
+## Then ask permission
+
+Summarize findings in plain language. Before any change — install, remove,
+edit config, change repo, write dotfile — name what, why, and approximate cost
+(size, time). Wait for explicit yes.
+
+## Execute
+
+- One logical command per `run`. No chaining unrelated steps.
+- `run` is non-interactive, 900 s timeout. Pass `-y` / `--yes`.
+- No background daemons inside a single `run`.
+- On `busy`: wait, check `state`, retry the same step.
+- State intent before each command so the transcript is auditable.
+- On failure, quote stderr. Do not retry blindly.
+
+## Close
+
+When the goal is met:
+
+    termufix close '<session-url>'
+
+Tell the user the link is now invalid.
+
+## If you have no `termufix` tool
+
+Some chat-only agents cannot issue shell commands. Do **not** pretend. Say so
+in one sentence, then act as a **remote copilot**: produce commands the user
+pastes into their Termux window one at a time, and ask them to paste back the
+output. You do not have direct access; the user is your hands.
+
+Suggested path: a tool-capable agent (IDE agent, terminal assistant, Google
+AI Studio Builder) where the session URL can be handed to a runner that can
+execute shell.
+
+## Safety — overrides everything else
+
+- The session URL is a secret. Never paste it into public chats, screenshots,
+  gists, or issue trackers.
+- Never print API keys, admin tokens, or `.env` contents.
+- No `rm -rf`, package removals, `git push --force`, credential exports, key
+  transfers, or `sudo` escalation without explicit, specific permission.
+- Do not copy the operator's personal provider keys to the device. Use scoped,
+  revocable, per-user keys, or better, the user's own login.
+- If any token appears in a transcript, tell the user to revoke it immediately.
+- Stop on ambiguity. Ask one short question instead of guessing.
+  </script>
 
   <script>
 (function(){
@@ -1325,7 +1421,8 @@
       delivery=$("delivery"),pulse=$("pulse"),linkEl=$("link"),copyLink=$("copyLink"),tgBtn=$("tgBtn"),
       resetBtn=$("reset"),reset2=$("reset2"),
       stepper=$("stepper"),
-      blkBrand=$("brand"),blkProfile=$("profile"),blkTermux=$("termux"),copyLinkWithPrompt=$("copyLinkWithPrompt");
+      blkBrand=$("brand"),blkProfile=$("profile"),blkTermux=$("termux"),copyLinkWithPrompt=$("copyLinkWithPrompt"),
+      protocolEl=$("agentProtocol");
 
   var KEY="tfx_public_v5";
   var data=null,timer=null,state="idle";
@@ -1536,8 +1633,10 @@
   copyLink.addEventListener("click",function(){copyText(data&&data.link,this,CHECK);});
   copyLinkWithPrompt.addEventListener("click",function(){
     if(!data||!data.link)return;
-    var agentText="این لینک، نشست خصوصی ترموکس من است:\n"+data.link+"\n\nابتدا وضعیت دستگاه و اتصال را بررسی کن. قبل از هر تغییر مهم، توضیح بده چه کاری می‌خواهی انجام بدهی. دستورها را یکی‌یکی اجرا کن، نتیجه را بررسی کن و در پایان خلاصه‌ای از کارهایی که انجام داده‌ای به من بده. اطلاعات محرمانه را نمایش نده و ارسال نکن.";
-    copyText(agentText,this,CHECK);
+    var tpl=(protocolEl&&protocolEl.textContent||"").trim();
+    if(!tpl){copyText(data.link,this,CHECK);return;}
+    var body=tpl.replace(/<session-url>/g,data.link);
+    copyText(body,this,CHECK);
   });
   tgBtn.addEventListener("click",sendTelegram);
   function resetAll(){
@@ -1570,7 +1669,7 @@
     },1900);
   }
 })();
-</script>
+  </script>
 </body>
 
 </html>
