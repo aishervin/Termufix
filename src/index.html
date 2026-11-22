@@ -1,458 +1,1318 @@
 <!doctype html>
 <html lang="fa" dir="rtl">
+
 <head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
-<meta name="theme-color" content="#0b0b0d">
-<meta name="robots" content="noindex,nofollow">
-<title>SHΞN™𝙵𝙸𝚇 — Termufix</title>
-<style>
-  :root{
-    --bg:#0b0b0d;
-    --panel:#121215;
-    --panel-2:#17171b;
-    --panel-3:#1e1e24;
-    --line:#2a2a31;
-    --line-soft:#1d1d22;
-    --ink:#f4f4f5;
-    --muted:#a1a1aa;
-    --faint:#71717a;
-    --orange:#f6821f;
-    --orange-2:#fbad41;
-    --orange-soft:rgba(246,130,31,.10);
-    --orange-line:rgba(246,130,31,.32);
-    --ok:#4ade80;
-    --radius:16px;
-    --shadow:0 24px 60px -34px rgba(0,0,0,.95);
-    --nav-h:70px;
-  }
-  *{box-sizing:border-box}
-  html{scroll-behavior:smooth}
-  body{
-    margin:0;min-height:100vh;background:var(--bg);color:var(--ink);
-    font:14.5px/1.8 "Vazirmatn","Segoe UI",Tahoma,system-ui,sans-serif;
-    overflow-x:hidden;
-  }
-  /* Cloudflare-like dotted backdrop + orange glow */
-  body::before{
-    content:"";position:fixed;inset:0;pointer-events:none;z-index:0;
-    background:
-      radial-gradient(ellipse 62% 40% at 50% -8%,rgba(246,130,31,.14),transparent 68%),
-      radial-gradient(ellipse 50% 34% at 92% 106%,rgba(246,130,31,.06),transparent 70%);
-  }
-  body::after{
-    content:"";position:fixed;inset:0;pointer-events:none;z-index:0;opacity:.55;
-    background-image:radial-gradient(rgba(255,255,255,.07) 1px,transparent 1.2px);
-    background-size:22px 22px;
-    mask-image:radial-gradient(ellipse 80% 55% at 50% 0%,#000 8%,transparent 76%);
-    -webkit-mask-image:radial-gradient(ellipse 80% 55% at 50% 0%,#000 8%,transparent 76%);
-  }
-  .wrap{position:relative;z-index:1;max-width:620px;margin:0 auto;padding:0 16px}
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+  <meta name="theme-color" content="#0b0b0d">
+  <meta name="robots" content="noindex,nofollow">
+  <title>SHΞN™𝙵𝙸𝚇 — Termufix</title>
+  <style>
+    :root {
+      --bg: #0b0b0d;
+      --panel: #121215;
+      --panel-2: #17171b;
+      --panel-3: #1e1e24;
+      --line: #2a2a31;
+      --line-soft: #1d1d22;
+      --ink: #f4f4f5;
+      --muted: #a1a1aa;
+      --faint: #71717a;
+      --orange: #f6821f;
+      --orange-2: #fbad41;
+      --orange-soft: rgba(246, 130, 31, .10);
+      --orange-line: rgba(246, 130, 31, .32);
+      --ok: #4ade80;
+      --radius: 16px;
+      --shadow: 0 24px 60px -34px rgba(0, 0, 0, .95);
+      --nav-h: 70px;
+    }
 
-  /* ---------- stepper (sticky) ---------- */
-  .stepper{
-    position:sticky;top:0;z-index:20;padding:12px 16px;
-    background:linear-gradient(180deg,rgba(11,11,13,.92),rgba(11,11,13,.72));
-    backdrop-filter:blur(12px);-webkit-backdrop-filter:blur(12px);
-    border-bottom:1px solid var(--line-soft);
-    opacity:0;transform:translateY(-100%);transition:.45s cubic-bezier(.2,.8,.2,1);
-  }
-  .stepper.show{opacity:1;transform:none}
-  .stepper ol{list-style:none;margin:0 auto;padding:0;max-width:588px;display:flex;align-items:center}
-  .stepper li{display:flex;align-items:center;gap:8px;font-size:11px;font-weight:800;color:var(--faint);white-space:nowrap}
-  .stepper li .dot{
-    width:24px;height:24px;border-radius:50%;display:grid;place-items:center;flex:none;
-    font:800 11px/1 ui-monospace,monospace;border:1.5px solid var(--line);background:var(--panel-2);transition:.3s;
-  }
-  .stepper li .dot svg{width:12px;height:12px;display:none}
-  .stepper li.active{color:var(--ink)}
-  .stepper li.active .dot{border-color:var(--orange);color:var(--orange);background:var(--orange-soft);box-shadow:0 0 0 4px rgba(246,130,31,.12)}
-  .stepper li.done{color:var(--muted)}
-  .stepper li.done .dot{background:var(--orange);border-color:var(--orange);color:#111}
-  .stepper li.done .dot b{display:none}
-  .stepper li.done .dot svg{display:block}
-  .stepper .bar{flex:1;height:2px;margin:0 8px;background:var(--line);border-radius:2px;position:relative;overflow:hidden;min-width:14px}
-  .stepper .bar::after{content:"";position:absolute;inset:0;background:linear-gradient(90deg,var(--orange),var(--orange-2));transform:scaleX(0);transform-origin:right;transition:transform .5s}
-  .stepper .bar.fill::after{transform:scaleX(1)}
+    * {
+      box-sizing: border-box
+    }
 
-  /* ---------- cards ---------- */
-  .block{
-    position:relative;overflow:hidden;
-    background:linear-gradient(180deg,var(--panel) 0%,#0e0e11 100%);
-    border:1px solid var(--line);
-    border-radius:var(--radius);
-    box-shadow:var(--shadow);
-    padding:24px 22px;
-    margin:16px 0;
-    transition:border-color .4s,box-shadow .4s,opacity .4s;
-  }
-  .block::before{
-    content:"";position:absolute;inset:0 0 auto 0;height:2px;
-    background:linear-gradient(90deg,transparent,rgba(246,130,31,.55),transparent);opacity:.5;transition:opacity .4s;
-  }
-  .block.current{border-color:var(--orange-line);box-shadow:var(--shadow),0 0 0 1px rgba(246,130,31,.08),0 0 44px -22px rgba(246,130,31,.45)}
-  .block.current::before{opacity:1}
+    html {
+      scroll-behavior: smooth
+    }
 
-  /* ---------- brand ---------- */
-  #brand{text-align:center;padding:36px 22px 28px;min-height:0;display:flex;flex-direction:column;align-items:center;justify-content:center;
-    background:linear-gradient(180deg,#131316 0%,#0c0c0f 100%)}
-  #brand::after{
-    content:"";position:absolute;top:-90px;left:50%;transform:translateX(-50%);
-    width:300px;height:230px;border-radius:50%;
-    background:radial-gradient(circle,rgba(246,130,31,.2),transparent 66%);
-    pointer-events:none;
-  }
-  .cf-logo{
-    position:relative;z-index:1;width:84px;height:84px;display:block;margin:0 auto;
-    filter:drop-shadow(0 16px 38px rgba(246,130,31,.32));
-    animation:logoIn .9s cubic-bezier(.2,.9,.2,1) both,float 5s ease-in-out .9s infinite;
-  }
-  @keyframes logoIn{from{opacity:0;transform:translateY(14px) scale(.9)}to{opacity:1;transform:none}}
-  .brand-kicker{
-    position:relative;z-index:1;margin:6px 0 0;font:800 9.5px/1 ui-monospace,monospace;
-    letter-spacing:.26em;color:var(--faint);
-  }
-  /* animated orange ↔ gray wavy gradient */
-  .wave-text{
-    background:linear-gradient(100deg,#6b6b75 0%,#b4b4bd 12%,#f6821f 28%,#fbad41 40%,#8d8d97 54%,#f6821f 70%,#fbad41 82%,#6b6b75 100%);
-    background-size:260% 100%;
-    -webkit-background-clip:text;background-clip:text;
-    -webkit-text-fill-color:transparent;color:transparent;
-    animation:wave 6s ease-in-out infinite alternate;
-  }
-  @keyframes wave{
-    0%{background-position:0% 50%}
-    100%{background-position:100% 50%}
-  }
-  .brand-name{
-    position:relative;z-index:1;margin:4px 0 0;font-size:34px;font-weight:900;
-    letter-spacing:-.02em;line-height:1.25;direction:ltr;
-    filter:drop-shadow(0 6px 22px rgba(246,130,31,.22));
-  }
-  .brand-name .tm{font-size:.42em;vertical-align:super;opacity:.8;margin-inline-start:1px}
-  .brand-foot{font:800 .3em/1 ui-monospace,monospace;letter-spacing:.16em;margin-inline-start:.6em;opacity:.85;white-space:nowrap}
-  .brand-foot .tm{font-size:.7em;vertical-align:super;letter-spacing:0}
-  .brand-sub{position:relative;z-index:1;margin:4px 0 0;font-size:12.5px;font-weight:700;letter-spacing:.02em;direction:ltr}
-  .tunnel-chip{
-    position:relative;z-index:1;display:inline-flex;align-items:center;gap:8px;margin-top:14px;
-    font-size:11px;font-weight:800;color:var(--muted);
-    border:1px solid var(--line);border-radius:999px;padding:7px 14px;
-    background:rgba(255,255,255,.025);
-  }
-  .tunnel-chip i{width:7px;height:7px;border-radius:50%;background:var(--ok);box-shadow:0 0 0 3px rgba(74,222,128,.14);animation:blink 1.8s infinite}
-  .tunnel-chip b{color:var(--orange);font-weight:800}
-  .scroll-cue{position:relative;z-index:1;margin-top:12px;color:var(--faint);animation:bob 1.8s ease-in-out infinite}
-  .scroll-cue svg{width:22px;height:22px}
-  @keyframes bob{0%,100%{transform:translateY(0);opacity:.5}50%{transform:translateY(5px);opacity:1}}
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--ink);
+      font: 14.5px/1.8 "Vazirmatn", "Segoe UI", Tahoma, system-ui, sans-serif;
+      overflow-x: hidden;
+    }
 
-  /* ---------- headings ---------- */
-  .block-title{display:flex;align-items:center;gap:12px;margin:0 0 6px}
-  .block-title .n{
-    width:34px;height:34px;border-radius:10px;display:grid;place-items:center;flex:none;
-    font:900 12px/1 ui-monospace,monospace;color:var(--orange);
-    border:1px solid var(--orange-line);background:var(--orange-soft);
-  }
-  .block-title h2{font-size:16px;margin:0;font-weight:800;letter-spacing:-.01em}
-  .block-title .spacer{flex:1}
-  .block-desc{font-size:12px;color:var(--muted);margin:0 0 18px;padding-inline-start:46px;line-height:1.8}
-  .chip{
-    display:inline-flex;align-items:center;gap:6px;font-size:10.5px;font-weight:800;
-    padding:4px 10px;border-radius:999px;border:1px solid var(--line);
-    background:var(--panel-2);color:var(--faint);white-space:nowrap;
-  }
-  .chip i{width:5px;height:5px;border-radius:50%;background:var(--faint)}
-  .chip.live{color:var(--orange);border-color:var(--orange-line);background:var(--orange-soft)}
-  .chip.live i{background:var(--orange);animation:blink 1.35s infinite}
-  .chip.on{color:#111;border-color:var(--orange);background:var(--orange)}
-  .chip.on i{background:#111}
-  @keyframes blink{50%{opacity:.22}}
+    /* Cloudflare-like dotted backdrop + orange glow */
+    body::before {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      background:
+        radial-gradient(ellipse 62% 40% at 50% -8%, rgba(246, 130, 31, .14), transparent 68%),
+        radial-gradient(ellipse 50% 34% at 92% 106%, rgba(246, 130, 31, .06), transparent 70%);
+    }
 
-  /* ---------- profile ---------- */
-  .avatar-row{
-    display:flex;align-items:center;gap:13px;margin-bottom:16px;padding:12px;
-    border:1px dashed var(--line);border-radius:14px;background:rgba(255,255,255,.015);
-  }
-  .avatar{
-    width:48px;height:48px;border-radius:13px;display:grid;place-items:center;flex:none;
-    background:var(--orange-soft);border:1px solid var(--orange-line);
-    color:var(--orange);transition:.25s;
-  }
-  .avatar svg{width:24px;height:24px}
-  .avatar .init{display:none;font:900 20px/1 ui-monospace,monospace}
-  .avatar.named{background:linear-gradient(145deg,rgba(246,130,31,.3),rgba(246,130,31,.08));box-shadow:0 10px 24px -14px rgba(246,130,31,.9)}
-  .avatar.named svg{display:none}
-  .avatar.named .init{display:block}
-  .who{min-width:0}
-  .who-name{font-weight:800;font-size:14px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;direction:ltr;text-align:right}
-  .who-sub{font-size:10.5px;color:var(--faint);direction:ltr;text-align:right;margin-top:1px}
+    body::after {
+      content: "";
+      position: fixed;
+      inset: 0;
+      pointer-events: none;
+      z-index: 0;
+      opacity: .55;
+      background-image: radial-gradient(rgba(255, 255, 255, .07) 1px, transparent 1.2px);
+      background-size: 22px 22px;
+      mask-image: radial-gradient(ellipse 80% 55% at 50% 0%, #000 8%, transparent 76%);
+      -webkit-mask-image: radial-gradient(ellipse 80% 55% at 50% 0%, #000 8%, transparent 76%);
+    }
 
-  label.lbl{display:block;font-size:11px;font-weight:800;color:var(--muted);margin:0 0 8px}
-  .input-wrap{
-    display:flex;align-items:center;border:1.5px solid var(--line);border-radius:12px;
-    background:#09090b;padding:0 12px;direction:ltr;transition:border-color .2s,box-shadow .2s;
-  }
-  .input-wrap .ico{width:17px;height:17px;color:var(--faint);flex:none;margin-right:2px;transition:color .2s}
-  .input-wrap:focus-within{border-color:var(--orange);box-shadow:0 0 0 4px rgba(246,130,31,.12)}
-  .input-wrap:focus-within .ico{color:var(--orange)}
-  .input-wrap .prefix{font:700 11px/1 ui-monospace,monospace;color:#52525b;margin-left:8px}
-  .input-wrap input{
-    flex:1;min-width:0;border:0;outline:0;background:transparent;color:var(--ink);
-    font:700 16px/1 ui-monospace,monospace;padding:15px 9px;letter-spacing:.02em;
-  }
-  .input-wrap input::placeholder{color:#3f3f48;font-weight:500}
-  .hint{font-size:11px;color:var(--faint);margin:9px 0 0;min-height:18px;transition:color .15s}
-  .hint.error{color:#fda4a4}
-  .hint.ok{color:var(--ok)}
+    .wrap {
+      position: relative;
+      z-index: 1;
+      max-width: 620px;
+      margin: 0 auto;
+      padding: 0 16px
+    }
 
-  .btn{
-    appearance:none;border:0;border-radius:11px;padding:14px 16px;
-    font:800 13px/1 inherit;cursor:pointer;width:100%;margin-top:12px;
-    display:inline-flex;align-items:center;justify-content:center;gap:8px;
-    transition:transform .15s,box-shadow .2s,opacity .2s,background .2s;
-  }
-  .btn.primary{
-    color:#fff;background:linear-gradient(180deg,#ff9a3c,var(--orange));
-    box-shadow:0 14px 30px -16px rgba(246,130,31,.9),inset 0 1px 0 rgba(255,255,255,.3);
-  }
-  .btn.primary:hover:not(:disabled){transform:translateY(-1px);box-shadow:0 18px 34px -16px rgba(246,130,31,1),inset 0 1px 0 rgba(255,255,255,.3)}
-  .btn.primary:active:not(:disabled){transform:translateY(0) scale(.995)}
-  .btn:disabled{opacity:.32;cursor:not-allowed;box-shadow:none}
-  .btn .spin{display:none;width:13px;height:13px;border:2px solid rgba(255,255,255,.35);border-top-color:#fff;border-radius:50%;animation:spin .7s linear infinite}
-  .btn.loading .spin{display:block}
-  @keyframes spin{to{transform:rotate(360deg)}}
+    /* ---------- stepper (sticky) ---------- */
+    .stepper {
+      position: sticky;
+      top: 0;
+      z-index: 20;
+      padding: 12px 16px;
+      background: linear-gradient(180deg, rgba(11, 11, 13, .92), rgba(11, 11, 13, .72));
+      backdrop-filter: blur(12px);
+      -webkit-backdrop-filter: blur(12px);
+      border-bottom: 1px solid var(--line-soft);
+      opacity: 0;
+      transform: translateY(-100%);
+      transition: .45s cubic-bezier(.2, .8, .2, 1);
+    }
 
-  /* ---------- termux ---------- */
-  #termux{padding-bottom:20px}
-  .stage-line{
-    display:flex;align-items:center;gap:13px;margin:2px 0 16px;padding:12px;
-    border:1px solid var(--line-soft);border-radius:14px;background:rgba(255,255,255,.015);
-  }
-  .termux-logo{
-    width:46px;height:46px;border-radius:11px;overflow:hidden;flex:none;
-    background:#000;box-shadow:0 12px 26px -14px rgba(0,0,0,.95);
-    transition:filter .35s,opacity .35s,box-shadow .35s,transform .35s;
-  }
-  .termux-logo svg{display:block;width:100%;height:100%}
-  .termux-logo.dim{filter:grayscale(1);opacity:.32}
-  .termux-logo.live{box-shadow:0 0 0 3px rgba(246,130,31,.16),0 12px 26px -14px rgba(0,0,0,.95);animation:float 3.8s ease-in-out infinite}
-  @keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-4px)}}
-  .stage-line .st{font-size:12px;color:var(--muted);line-height:1.8}
-  .stage-line .st b{color:var(--ink);font-weight:800}
+    .stepper.show {
+      opacity: 1;
+      transform: none
+    }
 
-  .code-box{
-    background:#060608;border:1px solid var(--line);border-radius:12px;overflow:hidden;
-  }
-  .code-bar{display:flex;align-items:center;gap:6px;padding:9px 12px;background:var(--panel-2);border-bottom:1px solid var(--line-soft);direction:ltr}
-  .code-bar span{width:9px;height:9px;border-radius:50%;background:#3a3a42}
-  .code-bar span:nth-child(1){background:#f6821f}
-  .code-bar em{margin-left:auto;font:700 9.5px/1 ui-monospace,monospace;color:var(--faint);font-style:normal;letter-spacing:.1em}
-  .code-box code{
-    display:block;padding:14px 14px 14px 30px;color:#d4d4dc;font:600 11px/1.8 ui-monospace,Menlo,monospace;
-    direction:ltr;text-align:left;white-space:pre-wrap;word-break:break-all;min-height:24px;position:relative;
-  }
-  .code-box code::before{content:"$";position:absolute;left:13px;color:var(--orange);font-weight:800}
-  .code-box code.placeholder{color:#3f3f48}
+    .stepper ol {
+      list-style: none;
+      margin: 0 auto;
+      padding: 0;
+      max-width: 588px;
+      display: flex;
+      align-items: center
+    }
 
-  .btn-row{display:flex;gap:8px;margin-top:10px}
-  .icon-btn{
-    appearance:none;cursor:pointer;border-radius:10px;padding:11px 13px;
-    display:inline-flex;align-items:center;justify-content:center;gap:7px;
-    font:800 11.5px/1 inherit;transition:.15s;flex:1;
-    background:var(--panel-2);color:var(--muted);border:1px solid var(--line);
-  }
-  .icon-btn svg{width:15px;height:15px;flex:none}
-  .icon-btn:hover:not(:disabled){color:var(--ink);border-color:#3a3a43;background:var(--panel-3)}
-  .icon-btn.accent{background:var(--orange-soft);color:var(--orange);border-color:var(--orange-line)}
-  .icon-btn.accent:hover:not(:disabled){background:rgba(246,130,31,.17);color:var(--orange-2);border-color:rgba(246,130,31,.5)}
-  .icon-btn:disabled{opacity:.3;cursor:not-allowed}
+    .stepper li {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--faint);
+      white-space: nowrap
+    }
 
-  .divider{height:1px;background:var(--line-soft);margin:22px -22px 0}
+    .stepper li .dot {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      flex: none;
+      font: 800 11px/1 ui-monospace, monospace;
+      border: 1.5px solid var(--line);
+      background: var(--panel-2);
+      transition: .3s;
+    }
 
-  /* ---------- delivery ---------- */
-  #delivery{margin-top:20px;scroll-margin-top:calc(var(--nav-h) + 10px)}
-  .d-head{display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:6px}
-  .d-head h3{font-size:14px;margin:0;font-weight:800;display:flex;align-items:center;gap:8px}
-  .d-head h3 .n{
-    width:26px;height:26px;border-radius:8px;display:grid;place-items:center;
-    font:900 10px/1 ui-monospace,monospace;color:var(--orange);border:1px solid var(--orange-line);background:var(--orange-soft);
-  }
-  .pulse{width:8px;height:8px;border-radius:50%;background:#45454f}
-  .pulse.waiting{background:var(--orange);animation:blink 1.25s infinite;box-shadow:0 0 0 3px rgba(246,130,31,.14)}
-  .pulse.ok{background:var(--ok);box-shadow:0 0 0 3px rgba(74,222,128,.18)}
-  .d-desc{font-size:12px;color:var(--muted);margin:0 0 12px}
-  .link-row{display:flex;gap:7px}
-  .link-row input{
-    flex:1;min-width:0;border:1.5px solid var(--line);border-radius:11px;background:#09090b;
-    color:#ffd7b0;font:600 11px/1.5 ui-monospace,monospace;padding:13px;direction:ltr;text-align:left;
-    transition:border-color .2s,box-shadow .2s;
-  }
-  .link-row input:focus{outline:0;border-color:var(--orange-line)}
-  .link-row input:placeholder-shown{color:#3f3f48}
-  .link-row input.ready{border-color:var(--orange-line);box-shadow:0 0 0 4px rgba(246,130,31,.08)}
-  .d-actions{display:flex;gap:7px;margin-top:8px}
-  .d-actions .icon-btn{font-size:11px}
-  .d-note{font-size:10.5px;color:var(--faint);margin:12px 0 0;line-height:1.9}
-  .d-note b{color:var(--muted)}
-  .ghost{
-    appearance:none;cursor:pointer;background:transparent;border:1px solid var(--line);
-    color:var(--faint);border-radius:9px;padding:9px 13px;font:700 10.5px/1 inherit;margin-top:12px;
-  }
-  .ghost:hover{color:var(--ink);border-color:#3a3a43}
-  #reset2{display:block;width:100%;margin-top:10px;text-align:center}
+    .stepper li .dot svg {
+      width: 12px;
+      height: 12px;
+      display: none
+    }
 
-  footer{
-    position:relative;z-index:1;text-align:center;padding:24px 0 44px;
-    color:var(--faint);font-size:10.5px;
-  }
-  footer .sig{font-family:ui-monospace,monospace;letter-spacing:.06em}
-  footer .sig b{color:var(--muted);font-weight:700}
+    .stepper li.active {
+      color: var(--ink)
+    }
 
-  .scroll-anchor{scroll-margin-top:calc(var(--nav-h) + 6px)}
-  .hidden{display:none!important}
-  .fade{animation:fade .32s ease both}
-  @keyframes fade{from{opacity:0;transform:translateY(7px)}to{opacity:1;transform:none}}
-  :focus-visible{outline:2px solid rgba(246,130,31,.6);outline-offset:2px}
-  @media (max-width:480px){
-    .block{padding:20px 16px;border-radius:15px}
-    .divider{margin:20px -16px 0}
-    .brand-name{font-size:25px}
-    #brand{padding:30px 16px 22px;min-height:0}
-    .block-desc{padding-inline-start:0}
-    .stepper li span.t{display:none}
-    .stepper li.active span.t{display:inline}
-  }
-  @media (prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}html{scroll-behavior:auto}}
-</style>
+    .stepper li.active .dot {
+      border-color: var(--orange);
+      color: var(--orange);
+      background: var(--orange-soft);
+      box-shadow: 0 0 0 4px rgba(246, 130, 31, .12)
+    }
+
+    .stepper li.done {
+      color: var(--muted)
+    }
+
+    .stepper li.done .dot {
+      background: var(--orange);
+      border-color: var(--orange);
+      color: #111
+    }
+
+    .stepper li.done .dot b {
+      display: none
+    }
+
+    .stepper li.done .dot svg {
+      display: block
+    }
+
+    .stepper .bar {
+      flex: 1;
+      height: 2px;
+      margin: 0 8px;
+      background: var(--line);
+      border-radius: 2px;
+      position: relative;
+      overflow: hidden;
+      min-width: 14px
+    }
+
+    .stepper .bar::after {
+      content: "";
+      position: absolute;
+      inset: 0;
+      background: linear-gradient(90deg, var(--orange), var(--orange-2));
+      transform: scaleX(0);
+      transform-origin: right;
+      transition: transform .5s
+    }
+
+    .stepper .bar.fill::after {
+      transform: scaleX(1)
+    }
+
+    /* ---------- cards ---------- */
+    .block {
+      position: relative;
+      overflow: hidden;
+      background: linear-gradient(180deg, var(--panel) 0%, #0e0e11 100%);
+      border: 1px solid var(--line);
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 24px 22px;
+      margin: 16px 0;
+      transition: border-color .4s, box-shadow .4s, opacity .4s;
+    }
+
+    .block::before {
+      content: "";
+      position: absolute;
+      inset: 0 0 auto 0;
+      height: 2px;
+      background: linear-gradient(90deg, transparent, rgba(246, 130, 31, .55), transparent);
+      opacity: .5;
+      transition: opacity .4s;
+    }
+
+    .block.current {
+      border-color: var(--orange-line);
+      box-shadow: var(--shadow), 0 0 0 1px rgba(246, 130, 31, .08), 0 0 44px -22px rgba(246, 130, 31, .45)
+    }
+
+    .block.current::before {
+      opacity: 1
+    }
+
+    /* ---------- brand ---------- */
+    #brand {
+      text-align: center;
+      padding: 16px 22px 16px;
+      margin-top: -8px;
+      min-height: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      background: linear-gradient(180deg, #131316 0%, #0c0c0f 100%)
+    }
+
+    #brand::after {
+      content: "";
+      position: absolute;
+      top: -130px;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 340px;
+      height: 250px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(246, 130, 31, .3), transparent 66%);
+      pointer-events: none;
+    }
+
+    .cf-logo {
+      position: relative;
+      z-index: 1;
+      width: 84px;
+      height: 84px;
+      display: block;
+      margin: 0 auto;
+      filter: drop-shadow(0 16px 38px rgba(246, 130, 31, .32));
+      animation: logoIn .9s cubic-bezier(.2, .9, .2, 1) both, float 5s ease-in-out .9s infinite;
+    }
+
+    @keyframes logoIn {
+      from {
+        opacity: 0;
+        transform: translateY(14px) scale(.9)
+      }
+
+      to {
+        opacity: 1;
+        transform: none
+      }
+    }
+
+    .brand-kicker {
+      position: relative;
+      z-index: 1;
+      margin: 6px 0 0;
+      font: 800 9.5px/1 ui-monospace, monospace;
+      letter-spacing: .26em;
+      color: var(--faint);
+    }
+
+    /* animated orange ↔ gray wavy gradient */
+    .wave-text {
+      background: linear-gradient(100deg, #6b6b75 0%, #b4b4bd 12%, #f6821f 28%, #fbad41 40%, #8d8d97 54%, #f6821f 70%, #fbad41 82%, #6b6b75 100%);
+      background-size: 260% 100%;
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      color: transparent;
+      animation: wave 6s ease-in-out infinite alternate;
+    }
+
+    @keyframes wave {
+      0% {
+        background-position: 0% 50%
+      }
+
+      100% {
+        background-position: 100% 50%
+      }
+    }
+
+    .rgb-wave {
+      background: linear-gradient(90deg, #ff007a, #7928ca, #4facfe, #00f2fe, #43e97b, #fa709a, #ff007a);
+      background-size: 300% 100%;
+      -webkit-background-clip: text;
+      background-clip: text;
+      -webkit-text-fill-color: transparent;
+      color: transparent;
+      animation: rgbWave 15s linear infinite;
+    }
+
+    @keyframes rgbWave {
+      0% {
+        background-position: 0% 50%
+      }
+
+      100% {
+        background-position: 300% 50%
+      }
+    }
+
+    .brand-name {
+      position: relative;
+      z-index: 1;
+      margin: 4px 0 0;
+      font-size: 34px;
+      font-weight: 900;
+      letter-spacing: -.02em;
+      line-height: 1.25;
+      direction: ltr;
+      filter: drop-shadow(0 6px 22px rgba(246, 130, 31, .22));
+    }
+
+    .brand-name .tm {
+      font-size: .42em;
+      vertical-align: super;
+      opacity: .8;
+      margin-inline-start: 1px
+    }
+
+    .brand-foot {
+      font: 800 .3em/1 ui-monospace, monospace;
+      letter-spacing: .16em;
+      margin-inline-start: .6em;
+      opacity: .85;
+      white-space: nowrap
+    }
+
+    .brand-foot .tm {
+      font-size: .7em;
+      vertical-align: super;
+      letter-spacing: 0
+    }
+
+    .brand-sub {
+      position: relative;
+      z-index: 1;
+      margin: 4px 0 0;
+      font-size: 12.5px;
+      font-weight: 700;
+      letter-spacing: .02em;
+      direction: ltr
+    }
+
+    .tunnel-chip {
+      position: relative;
+      z-index: 1;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      margin-top: 14px;
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--muted);
+      border: 1px solid var(--line);
+      border-radius: 999px;
+      padding: 7px 14px;
+      background: rgba(255, 255, 255, .025);
+    }
+
+    .tunnel-chip i {
+      width: 7px;
+      height: 7px;
+      border-radius: 50%;
+      background: var(--ok);
+      box-shadow: 0 0 0 3px rgba(74, 222, 128, .14);
+      animation: blink 1.8s infinite
+    }
+
+    .tunnel-chip b {
+      color: var(--orange);
+      font-weight: 800
+    }
+
+    .scroll-cue {
+      position: relative;
+      z-index: 1;
+      margin-top: 12px;
+      color: var(--faint);
+      animation: bob 1.8s ease-in-out infinite
+    }
+
+    .scroll-cue svg {
+      width: 22px;
+      height: 22px
+    }
+
+    @keyframes bob {
+
+      0%,
+      100% {
+        transform: translateY(0);
+        opacity: .5
+      }
+
+      50% {
+        transform: translateY(5px);
+        opacity: 1
+      }
+    }
+
+    /* ---------- headings ---------- */
+    .block-title {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      margin: 0 0 6px
+    }
+
+    .block-title .n {
+      width: 34px;
+      height: 34px;
+      border-radius: 10px;
+      display: grid;
+      place-items: center;
+      flex: none;
+      font: 900 12px/1 ui-monospace, monospace;
+      color: var(--orange);
+      border: 1px solid var(--orange-line);
+      background: var(--orange-soft);
+    }
+
+    .block-title h2 {
+      font-size: 16px;
+      margin: 0;
+      font-weight: 800;
+      letter-spacing: -.01em;
+      color: var(--orange)
+    }
+
+    .d-head h3 {
+      font-size: 14px;
+      margin: 0;
+      font-weight: 800;
+      color: var(--orange);
+      display: flex;
+      align-items: center;
+      gap: 8px
+    }
+
+    .block-title .spacer {
+      flex: 1
+    }
+
+    .block-desc {
+      font-size: 12px;
+      color: var(--muted);
+      margin: 0 0 18px;
+      padding-inline-start: 46px;
+      line-height: 1.8
+    }
+
+    .chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 10.5px;
+      font-weight: 800;
+      padding: 4px 10px;
+      border-radius: 999px;
+      border: 1px solid var(--line);
+      background: var(--panel-2);
+      color: var(--faint);
+      white-space: nowrap;
+    }
+
+    .chip i {
+      width: 5px;
+      height: 5px;
+      border-radius: 50%;
+      background: var(--faint)
+    }
+
+    .chip.live {
+      color: var(--orange);
+      border-color: var(--orange-line);
+      background: var(--orange-soft)
+    }
+
+    .chip.live i {
+      background: var(--orange);
+      animation: blink 1.35s infinite
+    }
+
+    .chip.on {
+      color: #111;
+      border-color: var(--orange);
+      background: var(--orange)
+    }
+
+    .chip.on i {
+      background: #111
+    }
+
+    @keyframes blink {
+      50% {
+        opacity: .22
+      }
+    }
+
+    /* ---------- profile ---------- */
+    .avatar-row {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+      margin-bottom: 16px;
+      padding: 4px 0;
+      border: 0;
+      background: transparent;
+    }
+
+    .avatar {
+      width: 48px;
+      height: 48px;
+      border-radius: 13px;
+      display: grid;
+      place-items: center;
+      flex: none;
+      background: var(--orange-soft);
+      border: 1px solid var(--orange-line);
+      color: var(--orange);
+      transition: .25s;
+    }
+
+    .avatar svg {
+      width: 24px;
+      height: 24px
+    }
+
+    .avatar .init {
+      display: none;
+      font: 900 20px/1 ui-monospace, monospace
+    }
+
+    .avatar.named {
+      background: linear-gradient(145deg, rgba(246, 130, 31, .3), rgba(246, 130, 31, .08));
+      box-shadow: 0 10px 24px -14px rgba(246, 130, 31, .9)
+    }
+
+    .avatar.named svg {
+      display: none
+    }
+
+    .avatar.named .init {
+      display: block
+    }
+
+    .who {
+      min-width: 0
+    }
+
+    .who-name {
+      font-weight: 800;
+      font-size: 14px;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      direction: ltr;
+      text-align: right
+    }
+
+    .who-sub {
+      font-size: 10.5px;
+      color: var(--faint);
+      direction: ltr;
+      text-align: right;
+      margin-top: 1px
+    }
+
+    label.lbl {
+      display: block;
+      font-size: 11px;
+      font-weight: 800;
+      color: var(--muted);
+      margin: 0 0 8px
+    }
+
+    .input-wrap {
+      display: flex;
+      align-items: center;
+      border: 1.5px solid var(--line);
+      border-radius: 12px;
+      background: #09090b;
+      padding: 0 12px;
+      direction: ltr;
+      transition: border-color .2s, box-shadow .2s;
+    }
+
+    .input-wrap .ico {
+      width: 17px;
+      height: 17px;
+      color: var(--faint);
+      flex: none;
+      margin-right: 2px;
+      transition: color .2s
+    }
+
+    .input-wrap:focus-within {
+      border-color: var(--orange);
+      box-shadow: 0 0 0 4px rgba(246, 130, 31, .12)
+    }
+
+    .input-wrap:focus-within .ico {
+      color: var(--orange)
+    }
+
+    .input-wrap .prefix {
+      font: 700 11px/1 ui-monospace, monospace;
+      color: #52525b;
+      margin-left: 8px
+    }
+
+    .input-wrap input {
+      flex: 1;
+      min-width: 0;
+      border: 0;
+      outline: 0;
+      background: transparent;
+      color: var(--ink);
+      font: 700 16px/1 ui-monospace, monospace;
+      padding: 15px 9px;
+      letter-spacing: .02em;
+    }
+
+    .input-wrap input::placeholder {
+      color: #3f3f48;
+      font-weight: 500
+    }
+
+    .hint {
+      font-size: 11px;
+      color: var(--faint);
+      margin: 9px 0 0;
+      min-height: 18px;
+      transition: color .15s
+    }
+
+    .hint.error {
+      color: #fda4a4
+    }
+
+    .hint.ok {
+      color: var(--ok)
+    }
+
+    .btn {
+      appearance: none;
+      border: 0;
+      border-radius: 11px;
+      padding: 14px 16px;
+      font: 800 13px/1 inherit;
+      cursor: pointer;
+      width: 100%;
+      margin-top: 12px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      transition: transform .15s, box-shadow .2s, opacity .2s, background .2s;
+    }
+
+    .btn.primary {
+      color: #fff;
+      background: linear-gradient(180deg, #ff9a3c, var(--orange));
+      box-shadow: 0 14px 30px -16px rgba(246, 130, 31, .9), inset 0 1px 0 rgba(255, 255, 255, .3);
+    }
+
+    .btn.primary:hover:not(:disabled) {
+      transform: translateY(-1px);
+      box-shadow: 0 18px 34px -16px rgba(246, 130, 31, 1), inset 0 1px 0 rgba(255, 255, 255, .3)
+    }
+
+    .btn.primary:active:not(:disabled) {
+      transform: translateY(0) scale(.995)
+    }
+
+    .btn:disabled {
+      opacity: .32;
+      cursor: not-allowed;
+      box-shadow: none
+    }
+
+    .btn .spin {
+      display: none;
+      width: 13px;
+      height: 13px;
+      border: 2px solid rgba(255, 255, 255, .35);
+      border-top-color: #fff;
+      border-radius: 50%;
+      animation: spin .7s linear infinite
+    }
+
+    .btn.loading .spin {
+      display: block
+    }
+
+    @keyframes spin {
+      to {
+        transform: rotate(360deg)
+      }
+    }
+
+    /* ---------- termux ---------- */
+    #termux {
+      padding-bottom: 20px
+    }
+
+    .stage-line {
+      display: flex;
+      align-items: center;
+      gap: 13px;
+      margin: 2px 0 16px;
+      padding: 12px;
+      border: 1px solid var(--line-soft);
+      border-radius: 14px;
+      background: rgba(255, 255, 255, .015);
+    }
+
+    .termux-logo {
+      width: 46px;
+      height: 46px;
+      border-radius: 11px;
+      overflow: hidden;
+      flex: none;
+      background: #000;
+      box-shadow: 0 12px 26px -14px rgba(0, 0, 0, .95);
+      transition: filter .35s, opacity .35s, box-shadow .35s, transform .35s;
+    }
+
+    .termux-logo svg {
+      display: block;
+      width: 100%;
+      height: 100%
+    }
+
+    .termux-logo.dim {
+      filter: grayscale(1);
+      opacity: .32
+    }
+
+    .termux-logo.live {
+      box-shadow: 0 0 0 3px rgba(246, 130, 31, .16), 0 12px 26px -14px rgba(0, 0, 0, .95);
+      animation: float 3.8s ease-in-out infinite
+    }
+
+    @keyframes float {
+
+      0%,
+      100% {
+        transform: translateY(0)
+      }
+
+      50% {
+        transform: translateY(-4px)
+      }
+    }
+
+    .stage-line .st {
+      font-size: 12px;
+      color: var(--muted);
+      line-height: 1.8
+    }
+
+    .stage-line .st b {
+      color: var(--ink);
+      font-weight: 800
+    }
+
+    .code-box {
+      background: #060608;
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      overflow: hidden;
+    }
+
+    .code-bar {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      padding: 9px 12px;
+      background: var(--panel-2);
+      border-bottom: 1px solid var(--line-soft);
+      direction: ltr
+    }
+
+    .code-bar span {
+      width: 9px;
+      height: 9px;
+      border-radius: 50%;
+      background: #3a3a42
+    }
+
+    .code-bar span:nth-child(1) {
+      background: #f6821f
+    }
+
+    .code-bar em {
+      margin-left: auto;
+      font: 700 9.5px/1 ui-monospace, monospace;
+      color: var(--faint);
+      font-style: normal;
+      letter-spacing: .1em
+    }
+
+    .code-box code {
+      display: block;
+      padding: 14px 14px 14px 30px;
+      color: #d4d4dc;
+      font: 600 11px/1.8 ui-monospace, Menlo, monospace;
+      direction: ltr;
+      text-align: left;
+      white-space: pre-wrap;
+      word-break: break-all;
+      min-height: 24px;
+      position: relative;
+    }
+
+    .code-box code::before {
+      content: "$";
+      position: absolute;
+      left: 13px;
+      color: var(--orange);
+      font-weight: 800
+    }
+
+    .code-box code.placeholder {
+      color: #3f3f48
+    }
+
+    .btn-row {
+      display: flex;
+      gap: 8px;
+      margin-top: 10px
+    }
+
+    .icon-btn {
+      appearance: none;
+      cursor: pointer;
+      border-radius: 10px;
+      padding: 11px 13px;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      gap: 7px;
+      font: 800 11.5px/1 inherit;
+      transition: .15s;
+      flex: 1;
+      background: var(--panel-2);
+      color: var(--muted);
+      border: 1px solid var(--line);
+    }
+
+    .icon-btn svg {
+      width: 15px;
+      height: 15px;
+      flex: none
+    }
+
+    .icon-btn:hover:not(:disabled) {
+      color: var(--ink);
+      border-color: #3a3a43;
+      background: var(--panel-3)
+    }
+
+    .icon-btn.accent {
+      background: var(--orange-soft);
+      color: var(--orange);
+      border-color: var(--orange-line)
+    }
+
+    .icon-btn.accent:hover:not(:disabled) {
+      background: rgba(246, 130, 31, .17);
+      color: var(--orange-2);
+      border-color: rgba(246, 130, 31, .5)
+    }
+
+    .icon-btn:disabled {
+      opacity: .3;
+      cursor: not-allowed
+    }
+
+    .divider {
+      height: 1px;
+      background: var(--line-soft);
+      margin: 22px -22px 0
+    }
+
+    /* ---------- delivery ---------- */
+    #delivery {
+      margin-top: 20px;
+      scroll-margin-top: calc(var(--nav-h) + 10px)
+    }
+
+    .d-head {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 8px;
+      margin-bottom: 6px
+    }
+
+    .d-head h3 {
+      font-size: 14px;
+      margin: 0;
+      font-weight: 800;
+      display: flex;
+      align-items: center;
+      gap: 8px
+    }
+
+    .d-head h3 .n {
+      width: 26px;
+      height: 26px;
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+      font: 900 10px/1 ui-monospace, monospace;
+      color: var(--orange);
+      border: 1px solid var(--orange-line);
+      background: var(--orange-soft);
+    }
+
+    .pulse {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: #45454f
+    }
+
+    .pulse.waiting {
+      background: var(--orange);
+      animation: blink 1.25s infinite;
+      box-shadow: 0 0 0 3px rgba(246, 130, 31, .14)
+    }
+
+    .pulse.ok {
+      background: var(--ok);
+      box-shadow: 0 0 0 3px rgba(74, 222, 128, .18)
+    }
+
+    .d-desc {
+      font-size: 12px;
+      color: var(--muted);
+      margin: 0 0 12px
+    }
+
+    .link-row {
+      display: flex;
+      gap: 7px
+    }
+
+    .link-row input {
+      flex: 1;
+      min-width: 0;
+      border: 1.5px solid var(--line);
+      border-radius: 11px;
+      background: #09090b;
+      color: #ffd7b0;
+      font: 600 11px/1.5 ui-monospace, monospace;
+      padding: 13px;
+      direction: ltr;
+      text-align: left;
+      transition: border-color .2s, box-shadow .2s;
+    }
+
+    .link-row input:focus {
+      outline: 0;
+      border-color: var(--orange-line)
+    }
+
+    .link-row input:placeholder-shown {
+      color: #3f3f48
+    }
+
+    .link-row input.ready {
+      border-color: var(--orange-line);
+      box-shadow: 0 0 0 4px rgba(246, 130, 31, .08)
+    }
+
+    .d-actions {
+      display: flex;
+      gap: 7px;
+      margin-top: 8px;
+      flex-wrap: wrap
+    }
+
+    .d-actions .icon-btn {
+      font-size: 11px;
+      flex: 1 1 110px
+    }
+
+    .d-note {
+      font-size: 10.5px;
+      color: var(--faint);
+      margin: 12px 0 0;
+      line-height: 1.9
+    }
+
+    .d-note b {
+      color: var(--muted)
+    }
+
+    .ghost {
+      appearance: none;
+      cursor: pointer;
+      background: transparent;
+      border: 1px solid var(--line);
+      color: var(--faint);
+      border-radius: 9px;
+      padding: 9px 13px;
+      font: 700 10.5px/1 inherit;
+      margin-top: 12px;
+    }
+
+    .ghost:hover {
+      color: var(--ink);
+      border-color: #3a3a43
+    }
+
+    #reset2 {
+      display: block;
+      width: 100%;
+      margin-top: 10px;
+      text-align: center
+    }
+
+    footer {
+      position: relative;
+      z-index: 1;
+      text-align: center;
+      padding: 24px 0 44px;
+      color: var(--faint);
+      font-size: 10.5px;
+    }
+
+    footer .sig {
+      font-family: ui-monospace, monospace;
+      letter-spacing: .06em
+    }
+
+    footer .sig b {
+      color: var(--muted);
+      font-weight: 700
+    }
+
+    .scroll-anchor {
+      scroll-margin-top: calc(var(--nav-h) + 6px)
+    }
+
+    .hidden {
+      display: none !important
+    }
+
+    .fade {
+      animation: fade .32s ease both
+    }
+
+    @keyframes fade {
+      from {
+        opacity: 0;
+        transform: translateY(7px)
+      }
+
+      to {
+        opacity: 1;
+        transform: none
+      }
+    }
+
+    :focus-visible {
+      outline: 2px solid rgba(246, 130, 31, .6);
+      outline-offset: 2px
+    }
+
+    @media (max-width:480px) {
+      .block {
+        padding: 20px 16px;
+        border-radius: 15px
+      }
+
+      .divider {
+        margin: 20px -16px 0
+      }
+
+      .brand-name {
+        font-size: 25px
+      }
+
+      #brand {
+        padding: 30px 16px 22px;
+        min-height: 0
+      }
+
+      .block-desc {
+        padding-inline-start: 0
+      }
+
+      .stepper li span.t {
+        display: none
+      }
+
+      .stepper li.active span.t {
+        display: inline
+      }
+    }
+
+    @media (prefers-reduced-motion:reduce) {
+      * {
+        animation: none !important;
+        transition: none !important
+      }
+
+      html {
+        scroll-behavior: auto
+      }
+    }
+  </style>
 </head>
+
 <body>
 
-<nav class="stepper" id="stepper" aria-label="progress">
-  <ol>
-    <li id="st1" class="active"><span class="dot"><b>1</b><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4"><path d="m5 13 4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="t">نام کاربری</span></li>
-    <span class="bar" id="bar1"></span>
-    <li id="st2"><span class="dot"><b>2</b><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4"><path d="m5 13 4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="t">اجرای دستور</span></li>
-    <span class="bar" id="bar2"></span>
-    <li id="st3"><span class="dot"><b>3</b><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3.4"><path d="m5 13 4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg></span><span class="t">لینک نشست</span></li>
-  </ol>
-</nav>
+  <nav class="stepper" id="stepper" aria-label="progress">
+    <ol>
+      <li id="st1" class="active"><span class="dot"><b>1</b><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="3.4">
+            <path d="m5 13 4 4L19 7" stroke-linecap="round" stroke-linejoin="round" />
+          </svg></span><span class="t">نام کاربری</span></li>
+      <span class="bar" id="bar1"></span>
+      <li id="st2"><span class="dot"><b>2</b><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="3.4">
+            <path d="m5 13 4 4L19 7" stroke-linecap="round" stroke-linejoin="round" />
+          </svg></span><span class="t">اجرای دستور</span></li>
+      <span class="bar" id="bar2"></span>
+      <li id="st3"><span class="dot"><b>3</b><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+            stroke-width="3.4">
+            <path d="m5 13 4 4L19 7" stroke-linecap="round" stroke-linejoin="round" />
+          </svg></span><span class="t">لینک نشست</span></li>
+    </ol>
+  </nav>
 
-<main class="wrap">
+  <main class="wrap">
 
-  <!-- 1 · brand -->
-  <section class="block current" id="brand" aria-label="SHΞN Termufix">
-    <svg class="cf-logo" viewBox="0 0 24 24" fill="#F38020" xmlns="http://www.w3.org/2000/svg" role="img" aria-label="Cloudflare">
-      <path d="M16.5088 16.8447c.1475-.5068.0908-.9707-.1553-1.3154-.2246-.3164-.6045-.499-1.0615-.5205l-8.6592-.1123a.1559.1559 0 0 1-.1333-.0713c-.0283-.042-.0351-.0986-.021-.1553.0278-.084.1123-.1484.2036-.1562l8.7359-.1123c1.0351-.0489 2.1601-.8868 2.5537-1.9136l.499-1.3013c.0215-.0561.0293-.1128.0147-.168-.5625-2.5463-2.835-4.4453-5.5499-4.4453-2.5039 0-4.6284 1.6177-5.3876 3.8614-.4927-.3658-1.1187-.5625-1.794-.499-1.2026.119-2.1665 1.083-2.2861 2.2856-.0283.31-.0069.6128.0635.894C1.5683 13.171 0 14.7754 0 16.752c0 .1748.0142.3515.0352.5273.0141.083.0844.1475.1689.1475h15.9814c.0909 0 .1758-.0645.2032-.1553l.12-.4268zm2.7568-5.5634c-.0771 0-.1611 0-.2383.0112-.0566 0-.1054.0415-.127.0976l-.3378 1.1744c-.1475.5068-.0918.9707.1543 1.3164.2256.3164.6055.498 1.0625.5195l1.8437.1133c.0557 0 .1055.0263.1329.0703.0283.043.0351.1074.0214.1562-.0283.084-.1132.1485-.204.1553l-1.921.1123c-1.041.0488-2.1582.8867-2.5527 1.914l-.1406.3585c-.0283.0713.0215.1416.0986.1416h6.5977c.0771 0 .1474-.0489.169-.126.1122-.4082.1757-.837.1757-1.2803 0-2.6025-2.125-4.727-4.7344-4.727"/>
-    </svg>
-    <h1 class="brand-name wave-text">Termifix<span class="brand-foot">SHΞN<span class="tm">™</span></span></h1>
-    <div class="brand-kicker">POWERED BY CLOUDFLARE</div>
-    <p class="brand-sub wave-text">Termufix Turn Termux Terminal True</p>
-    <span class="tunnel-chip"><i></i> تانل امن فعال <b>Cloudflare</b></span>
-    <div class="scroll-cue" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2"><path d="m6 9 6 6 6-6" stroke-linecap="round" stroke-linejoin="round"/></svg></div>
-  </section>
+    <!-- 1 · brand -->
+    <section class="block current" id="brand" aria-label="SHΞN Termufix">
+      <svg class="cf-logo" viewBox="0 0 24 24" fill="#F38020" xmlns="http://www.w3.org/2000/svg" role="img"
+        aria-label="Cloudflare">
+        <path
+          d="M16.5088 16.8447c.1475-.5068.0908-.9707-.1553-1.3154-.2246-.3164-.6045-.499-1.0615-.5205l-8.6592-.1123a.1559.1559 0 0 1-.1333-.0713c-.0283-.042-.0351-.0986-.021-.1553.0278-.084.1123-.1484.2036-.1562l8.7359-.1123c1.0351-.0489 2.1601-.8868 2.5537-1.9136l.499-1.3013c.0215-.0561.0293-.1128.0147-.168-.5625-2.5463-2.835-4.4453-5.5499-4.4453-2.5039 0-4.6284 1.6177-5.3876 3.8614-.4927-.3658-1.1187-.5625-1.794-.499-1.2026.119-2.1665 1.083-2.2861 2.2856-.0283.31-.0069.6128.0635.894C1.5683 13.171 0 14.7754 0 16.752c0 .1748.0142.3515.0352.5273.0141.083.0844.1475.1689.1475h15.9814c.0909 0 .1758-.0645.2032-.1553l.12-.4268zm2.7568-5.5634c-.0771 0-.1611 0-.2383.0112-.0566 0-.1054.0415-.127.0976l-.3378 1.1744c-.1475.5068-.0918.9707.1543 1.3164.2256.3164.6055.498 1.0625.5195l1.8437.1133c.0557 0 .1055.0263.1329.0703.0283.043.0351.1074.0214.1562-.0283.084-.1132.1485-.204.1553l-1.921.1123c-1.041.0488-2.1582.8867-2.5527 1.914l-.1406.3585c-.0283.0713.0215.1416.0986.1416h6.5977c.0771 0 .1474-.0489.169-.126.1122-.4082.1757-.837.1757-1.2803 0-2.6025-2.125-4.727-4.7344-4.727" />
+      </svg>
+      <h1 class="brand-name wave-text">Termifix<span class="brand-foot">SHΞN<span class="tm">™</span></span></h1>
+      <div class="brand-kicker">POWERED BY CLOUDFLARE</div>
+      <p class="brand-sub wave-text">Termufix Turn Termux Terminal True</p>
+      <span class="tunnel-chip"><i></i> تانل امن فعال <b>Cloudflare</b></span>
+      <div class="scroll-cue" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor"
+          stroke-width="2.2">
+          <path d="m6 9 6 6 6-6" stroke-linecap="round" stroke-linejoin="round" />
+        </svg></div>
+    </section>
 
-  <!-- 2 · profile -->
-  <section class="block scroll-anchor" id="profile" aria-label="profile">
-    <div class="block-title">
-      <span class="n">01</span><h2>پروفایل</h2><span class="spacer"></span>
-      <span class="chip" id="profileChip"><i></i><span id="profileChipText">در انتظار</span></span>
-    </div>
-    <p class="block-desc"> یک اسم کوتاه انگلیسی انتخاب کن؛ لینک اختصاصی تو با همین اسم ساخته می‌شود.</p>
-
-    <div class="avatar-row">
-      <div class="avatar" id="avatar" aria-hidden="true">
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="12" cy="8" r="3.6"/><path d="M4.8 20c.8-3.4 3.6-5.3 7.2-5.3s6.4 1.9 7.2 5.3" stroke-linecap="round"/></svg>
-        <span class="init" id="avatarInit"></span>
+    <!-- 2 · profile -->
+    <section class="block scroll-anchor" id="profile" aria-label="profile">
+      <div class="block-title">
+        <span class="n">01</span>
+        <h2>پروفایل</h2><span class="spacer"></span>
+        <span class="chip" id="profileChip"><i></i><span id="profileChipText">در انتظار</span></span>
       </div>
-      <div class="who">
-        <div class="who-name" id="whoName">👤</div>
-        <div class="who-sub" id="whoSub"> اسم دلخواه با حروف کوچک انگلیسی وارد کن</div>
+      <p class="block-desc"> یک اسم کوتاه انگلیسی انتخاب کن؛ لینک اختصاصی تو با همین اسم ساخته می‌شود.</p>
+
+      <div class="avatar-row">
+        <div class="avatar" id="avatar" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <circle cx="12" cy="8" r="3.6" />
+            <path d="M4.8 20c.8-3.4 3.6-5.3 7.2-5.3s6.4 1.9 7.2 5.3" stroke-linecap="round" />
+          </svg>
+          <span class="init" id="avatarInit"></span>
+        </div>
+        <div class="who">
+          <div class="who-name" id="whoName">👤</div>
+          <div class="who-sub" id="whoSub"> اسم دلخواه با حروف کوچک انگلیسی وارد کن</div>
+        </div>
       </div>
-    </div>
 
-    <label class="lbl" for="name">  ⚠️ فقط (حروف کوچک انگلیسی) </label>
-    <div class="input-wrap">
-      <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="8" r="3.6"/><path d="M4.8 20c.8-3.4 3.6-5.3 7.2-5.3s6.4 1.9 7.2 5.3" stroke-linecap="round"/></svg>
-      <span class="prefix">/join/</span>
-      <input id="name" type="text" placeholder="shervin" maxlength="20"
-             autocomplete="off" autocapitalize="none" autocorrect="off" spellcheck="false"
-             inputmode="latin" aria-describedby="hint">
-    </div>
-    <p class="hint" id="hint" aria-live="polite">a-z · حداقل ۳ حرف</p>
-
-    <button class="btn primary" id="create" type="button" disabled>
-      <span class="spin" aria-hidden="true"></span>
-      <span class="btn-label">تأیید</span>
-    </button>
-    <button class="ghost hidden" id="reset" type="button">تغییر نام کاربری / شروع اتصال جدید</button>
-  </section>
-
-  <!-- 3 · termux + delivery -->
-  <section class="block scroll-anchor" id="termux" aria-label="termux">
-    <div class="block-title">
-      <span class="n">02</span><h2>Termux</h2><span class="spacer"></span>
-      <span class="chip" id="termuxChip"><i></i><span id="termuxChipText">غیرفعال</span></span>
-    </div>
-    <p class="block-desc">دستور زیر را کپی کن و در Termux اجرا کن.</p>
-
-    <div class="stage-line">
-      <div class="termux-logo dim" id="termuxLogo" aria-hidden="true">
-        <svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
-          <rect width="512" height="512" fill="#000"/>
-          <path d="M156.5 142.5H113.5L198.5 255.5V256.5L113.5 369.5H156.5L241.5 256.5V255.5L156.5 142.5Z" fill="#fff"/>
-          <path d="M398.5 341.5H270.5V369.5H398.5V341.5Z" fill="#fff"/>
+      <label class="lbl" for="name"> ⚠️ فقط (حروف کوچک انگلیسی) </label>
+      <div class="input-wrap">
+        <svg class="ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true">
+          <circle cx="12" cy="8" r="3.6" />
+          <path d="M4.8 20c.8-3.4 3.6-5.3 7.2-5.3s6.4 1.9 7.2 5.3" stroke-linecap="round" />
         </svg>
+        <span class="prefix">/join/</span>
+        <input id="name" type="text" placeholder="shervin" maxlength="20" autocomplete="off" autocapitalize="none"
+          autocorrect="off" spellcheck="false" inputmode="latin" aria-describedby="hint">
       </div>
-      <div class="st" id="stageText">دستور اتصال بعد از تأیید اسم ساخته می‌شود.</div>
-    </div>
+      <p class="hint" id="hint" aria-live="polite">a-z · حداقل ۳ حرف</p>
 
-    <div class="code-box">
-      <div class="code-bar" aria-hidden="true"><span></span><span></span><span></span><em>TERMUX</em></div>
-      <code id="cmd" class="placeholder">curl -sL …</code>
-    </div>
-
-    <div class="btn-row">
-      <button class="icon-btn accent" id="copyBtn" type="button" disabled>
-        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10" stroke-linecap="round"/></svg>
-        کپی دستور
+      <button class="btn primary" id="create" type="button" disabled>
+        <span class="spin" aria-hidden="true"></span>
+        <span class="btn-label">تأیید</span>
       </button>
-    </div>
+      <button class="ghost hidden" id="reset" type="button">تغییر نام کاربری / شروع اتصال جدید</button>
+    </section>
 
-    <div class="divider"></div>
+    <!-- 3 · termux + delivery -->
+    <section class="block scroll-anchor" id="termux" aria-label="termux">
+      <div class="block-title">
+        <span class="n">02</span>
+        <h2>Termux</h2><span class="spacer"></span>
+        <span class="chip" id="termuxChip"><i></i><span id="termuxChipText">غیرفعال</span></span>
+      </div>
+      <p class="block-desc">دستور زیر را کپی کن و در Termux اجرا کن.</p>
 
-    <div id="delivery" class="scroll-anchor">
-      <div class="d-head">
-        <h3>
-          <span class="n">03</span>
-          تحویل لینک نشست
-        </h3>
-        <span class="pulse" id="pulse"></span>
+      <div class="stage-line">
+        <div class="termux-logo dim" id="termuxLogo" aria-hidden="true">
+          <svg viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+            <rect width="512" height="512" fill="#000" />
+            <path d="M156.5 142.5H113.5L198.5 255.5V256.5L113.5 369.5H156.5L241.5 256.5V255.5L156.5 142.5Z"
+              fill="#fff" />
+            <path d="M398.5 341.5H270.5V369.5H398.5V341.5Z" fill="#fff" />
+          </svg>
+        </div>
+        <div class="st" id="stageText">دستور اتصال بعد از تأیید اسم ساخته می‌شود.</div>
       </div>
-      <p class="d-desc">بعد از اجرای دستور بالا در ترموکس  Termux، لینک نشست اینجا ظاهر میشود ، واگذاری این لینک به ترمینال ایجنت ها امکان دسترسی اولیه برای اعمال تنظیمات دلخواه شما در ترموکس را فراهم خواهد کرد توجه داشته باشید اکنون این لینک حکم یک کلید محرمانه و شخصی پیدا کرده لذا آن را در فضای عمومی یا نامطمئن منتشر نکنید .</p>
-      <div class="link-row">
-        <input id="link" readonly dir="ltr" placeholder="در انتظار اتصال Termux…">
+
+      <div class="code-box">
+        <div class="code-bar" aria-hidden="true"><span></span><span></span><span></span><em>TERMUX</em></div>
+        <code id="cmd" class="placeholder">curl -sL …</code>
       </div>
-      <div class="d-actions">
-        <button class="icon-btn" id="copyLink" type="button" disabled>
-          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="9" y="9" width="11" height="11" rx="2"/><path d="M5 15V5a2 2 0 0 1 2-2h10" stroke-linecap="round"/></svg>
-          کپی لینک
+
+      <div class="btn-row">
+        <button class="icon-btn accent" id="copyBtn" type="button" disabled>
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <rect x="9" y="9" width="11" height="11" rx="2" />
+            <path d="M5 15V5a2 2 0 0 1 2-2h10" stroke-linecap="round" />
+          </svg>
+          کپی دستور
         </button>
-        <button class="icon-btn" id="tgBtn" type="button" disabled>
-          <svg viewBox="0 0 24 24" fill="currentColor"><path d="M21.9 4.6c.2-1-.7-1.8-1.6-1.4L2.7 10.3c-1 .4-1 1.9.1 2.2l4.5 1.4 1.7 5.4c.3.9 1.4 1.1 2 .4l2.5-2.5 4.6 3.4c.8.6 1.9.1 2.1-.9l2.7-15.1zM8.3 13.1l9.4-7.5c.3-.2.6.2.4.4l-7.7 7.7-.3 3-1.8-3.6z"/></svg>
-          ارسال در تلگرام
-        </button>
       </div>
-      <button class="ghost hidden" id="reset2" type="button">شروع اتصال جدید</button>
-      <p class="d-note">پنجره‌ی Termux را باز نگه دار · برای توقف <b>Ctrl-C</b> · لینک نهایی فقط برای پشتیبان</p>
-    </div>
-  </section>
 
-</main>
+      <div class="divider"></div>
 
-<footer>
-  <span class="sig">☬ Exclusive <b>SHΞN™</b> made</span>
-</footer>
+      <div id="delivery" class="scroll-anchor">
+        <div class="d-head">
+          <h3>
+            <span class="n">03</span>
+            تحویل لینک نشست
+          </h3>
+          <span class="pulse" id="pulse"></span>
+        </div>
+        <p class="d-desc">بعد از اجرای دستور بالا در ترموکس Termux، لینک نشست اینجا ظاهر میشود ، واگذاری این لینک به
+          ترمینال ایجنت ها امکان دسترسی اولیه برای اعمال تنظیمات دلخواه شما در ترموکس را فراهم خواهد کرد توجه داشته
+          باشید اکنون این لینک حکم یک کلید محرمانه و شخصی پیدا کرده لذا آن را در فضای عمومی یا نامطمئن منتشر نکنید .</p>
+        <div class="link-row">
+          <input id="link" readonly dir="ltr" placeholder="در انتظار اتصال Termux…">
+        </div>
+        <div class="d-actions">
+          <button class="icon-btn" id="copyLink" type="button" disabled>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="9" y="9" width="11" height="11" rx="2" />
+              <path d="M5 15V5a2 2 0 0 1 2-2h10" stroke-linecap="round" />
+            </svg>
+            لینک
+          </button>
+          <button class="icon-btn accent" id="copyLinkWithPrompt" type="button" disabled>
+            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <rect x="9" y="9" width="11" height="11" rx="2" />
+              <path d="M5 15V5a2 2 0 0 1 2-2h10" stroke-linecap="round" />
+            </svg>
+            لینک+پرامپت
+          </button>
+          <button class="icon-btn" id="tgBtn" type="button" disabled>
+            <svg viewBox="0 0 24 24" fill="currentColor">
+              <path
+                d="M21.9 4.6c.2-1-.7-1.8-1.6-1.4L2.7 10.3c-1 .4-1 1.9.1 2.2l4.5 1.4 1.7 5.4c.3.9 1.4 1.1 2 .4l2.5-2.5 4.6 3.4c.8.6 1.9.1 2.1-.9l2.7-15.1zM8.3 13.1l9.4-7.5c.3-.2.6.2.4.4l-7.7 7.7-.3 3-1.8-3.6z" />
+            </svg>
+            ارسال در تلگرام
+          </button>
+        </div>
+        <p style="font-size:11.5px;color:var(--muted);margin-top:12px;line-height:1.7;direction:rtl">
+          گزینهٔ پیشنهادی برای شروع در صورت عدم دسترسی به ایجنت‌بات‌ها، <a href="https://aistudio.google.com"
+            target="_blank" rel="noopener" class="rgb-wave" style="font-weight:800;text-decoration:none">استودیوی هوش
+            گوگل (Google AI Studio)</a> است؛ لینک و پرامپت دریافتی را به بخش Builder استودیو منتقل کنید.
+        </p>
+        <button class="ghost hidden" id="reset2" type="button">شروع اتصال جدید</button>
+        <p class="d-note">پنجره‌ی Termux را باز نگه دار · برای توقف <b>Ctrl-C</b> · لینک نهایی فقط برای پشتیبان</p>
+      </div>
+    </section>
 
-<script>
+  </main>
+
+  <footer>
+    <span class="sig">☬ Exclusive <b>SHΞN™</b> made</span>
+  </footer>
+
+  <script>
 (function(){
   "use strict";
   var $=function(id){return document.getElementById(id);};
@@ -465,7 +1325,7 @@
       delivery=$("delivery"),pulse=$("pulse"),linkEl=$("link"),copyLink=$("copyLink"),tgBtn=$("tgBtn"),
       resetBtn=$("reset"),reset2=$("reset2"),
       stepper=$("stepper"),
-      blkBrand=$("brand"),blkProfile=$("profile"),blkTermux=$("termux");
+      blkBrand=$("brand"),blkProfile=$("profile"),blkTermux=$("termux"),copyLinkWithPrompt=$("copyLinkWithPrompt");
 
   var KEY="tfx_public_v5";
   var data=null,timer=null,state="idle";
@@ -523,6 +1383,7 @@
   function updateButtons(){
     copyBtn.disabled=!(data&&data.command);
     copyLink.disabled=!(data&&data.link);
+    copyLinkWithPrompt.disabled=!(data&&data.link);
     tgBtn.disabled=!(data&&data.link);
   }
 
@@ -673,6 +1534,11 @@
   var CHECK='<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="m5 13 4 4L19 7" stroke-linecap="round" stroke-linejoin="round"/></svg> کپی شد';
   copyBtn.addEventListener("click",function(){copyText(data&&data.command,this,CHECK);});
   copyLink.addEventListener("click",function(){copyText(data&&data.link,this,CHECK);});
+  copyLinkWithPrompt.addEventListener("click",function(){
+    if(!data||!data.link)return;
+    var agentText="این لینک، نشست خصوصی ترموکس من است:\n"+data.link+"\n\nابتدا وضعیت دستگاه و اتصال را بررسی کن. قبل از هر تغییر مهم، توضیح بده چه کاری می‌خواهی انجام بدهی. دستورها را یکی‌یکی اجرا کن، نتیجه را بررسی کن و در پایان خلاصه‌ای از کارهایی که انجام داده‌ای به من بده. اطلاعات محرمانه را نمایش نده و ارسال نکن.";
+    copyText(agentText,this,CHECK);
+  });
   tgBtn.addEventListener("click",sendTelegram);
   function resetAll(){
     if(timer){clearTimeout(timer);timer=null;}
@@ -706,4 +1572,5 @@
 })();
 </script>
 </body>
+
 </html>
