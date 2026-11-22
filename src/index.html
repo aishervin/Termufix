@@ -1403,39 +1403,108 @@ step, not only the first one.
 - No background daemons inside a single `run`.
 - On `busy`: wait, check `state`, retry the same step.
 - State intent in Persian before each command so the transcript is auditable.
-- On failure, quote stderr. Do not retry blindly. Explain the failure in
-  Persian in one or two sentences before proposing a fix.
+  <script type="text/plain" id="agentProtocol">
+# Termufix Session Handoff
 
-## 6. Close
+**Session URL:** <session-url>
 
-When the goal is met:
+Always reply to the user in **Persian (Farsi)**.
 
-    termufix close '<session-url>'
+---
 
-Tell the user in Persian that the link is now invalid.
+## First: pick your branch
 
-## 7. If you have no `termufix` tool
+Try:
 
-Some chat-only agents cannot issue shell commands. Do **not** pretend. Say so
-in Persian in one sentence, then act as a **remote copilot**: produce commands
-the user pastes into their Termux window one at a time, and ask them to paste
-back the output. You do not have direct access; the user is your hands.
+    termufix state '<session-url>'
 
-Suggested path: a tool-capable agent (IDE agent, terminal assistant, Google
-AI Studio Builder) where the session URL can be handed to a runner that can
-execute shell.
+- Command works → you are in **Branch A**.
+- Command fails (not found, no shell, no remote execution) → you are in
+  **Branch B**.
 
-## 8. Safety — overrides everything else
+Pick ONE branch and follow only that one. Do not mix them.
 
-- The session URL is a secret. Never paste it into public chats, screenshots,
-  gists, or issue trackers.
+---
+
+## Branch A — you have `termufix`
+
+You can act directly on the device. Sequence:
+
+1. `termufix state '<session-url>'`
+   - `offline` → tell user in Persian: «دستگاه هنوز وصل نشده؛ پنجرهٔ Termux را باز نگه دارید.» Retry up to 3 times, ~10 s apart, then stop.
+   - `expired` → ask user in Persian for a new link. Stop.
+   - `online` → continue.
+
+2. Read-only diagnostic:
+
+       termufix run '<session-url>' 'uname -a; getprop ro.product.model 2>/dev/null; getprop ro.build.version.release 2>/dev/null; df -h "$HOME"; command -v opencode && opencode --version 2>&1 || true'
+
+3. Send the user ONE Persian status message:
+
+   «اتصال برقرار است. دستگاه: [model] — اندروید [version]. چه عملیاتی می‌خواهید روی ترموکس اعمال کنم؟»
+
+4. Wait for their answer. Only then act. Before each mutating command,
+   restate in Persian what you will do and why, and get confirmation.
+
+5. `run` is non-interactive, 900 s timeout, one logical command per call.
+   Pass `-y` / `--yes`. On `busy`: wait, check state, retry the same step.
+   No background daemons inside a single `run`.
+
+6. Goal reached → `termufix close '<session-url>'`, and tell the user in
+   Persian the link is now dead.
+
+---
+
+## Branch B — you do NOT have `termufix`
+
+You cannot touch the device. You are a **remote copilot**. Do not pretend
+otherwise. Do not ask the user any variant of "did the connection work?" —
+you have no connection, no way to check, and no basis to ask.
+
+Sequence:
+
+1. Open with exactly this, one sentence, in Persian:
+
+   «من دسترسی مستقیم به دستگاه ندارم؛ شما دستور را در Termux اجرا می‌کنید و خروجی را برای من می‌فرستید.»
+
+2. Then send this diagnostic block, exactly as-is, inside a copyable code
+   block:
+
+       uname -a; getprop ro.product.model 2>/dev/null; getprop ro.build.version.release 2>/dev/null; df -h "$HOME"; command -v opencode && opencode --version 2>&1 || true
+
+   And say in Persian: «این را در Termux اجرا کنید و خروجی را برایم بفرستید.»
+
+3. Stop and wait for the user's paste. Do not proceed before you have it.
+
+4. When you have the output, summarize the device in Persian in one line:
+
+   «دستگاه: [model] — اندروید [version].»
+
+   Then ask exactly:
+
+   «چه عملیاتی می‌خواهید روی ترموکس اعمال کنم؟»
+
+5. For every subsequent step: give ONE copyable command, ask for the output,
+   wait, then the next command. Never batch multiple steps.
+
+6. Before each mutating command, restate the intent in Persian and ask for
+   confirmation.
+
+7. **Never write «متصل است» or «اتصال برقرار شد» in this branch.** You have
+   no connection to claim. If you must describe state, say «در انتظار اجرای
+   دستور توسط شما».
+
+---
+
+## Rules for both branches
+
+- Reply in Persian at all times. Commands, package names, and paths stay in
+  English inside the Persian sentence.
 - Never print API keys, admin tokens, or `.env` contents.
-- No `rm -rf`, package removals, `git push --force`, credential exports, key
-  transfers, or `sudo` escalation without explicit, specific permission.
-- Do not copy the operator's personal provider keys to the device. Use scoped,
-  revocable, per-user keys, or better, the user's own login.
-- If any token appears in a transcript, tell the user in Persian to revoke it
-  immediately, and how.
+- No `rm -rf`, package removals, `git push --force`, credential exports, or
+  privilege escalation without explicit permission stated in the transcript.
+- If any token appears in a transcript, tell the user in Persian to revoke it,
+  and how.
 - Stop on ambiguity. Ask one short question in Persian instead of guessing.
   </script>
 
