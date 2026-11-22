@@ -1330,24 +1330,51 @@ other credentials — the session URL above is sufficient.
 
 ---
 
-## What this is
+## 0. Language and communication
+
+Reply to the user in **Persian (Farsi)** at all times — even if the user
+writes in English, or the surrounding transcript is in English. Keep commands,
+package names, paths, and code in English inside a Persian sentence.
+
+After §3.3 (the read-only diagnostic) finishes, send the user a short Persian
+message with three pieces of information:
+
+1. Whether the device is reachable — «متصل است» / «در دسترس نیست».
+2. Device model and Android version, if known.
+3. Whether the target terminal agent is already installed — «نصب است» /
+   «نصب نیست».
+
+Then, **before doing anything else**, ask in Persian:
+
+> اتصال برقرار شد. چه عملیاتی می‌خواهید روی ترموکس اعمال کنم؟
+
+Wait for an explicit answer. Do not install, remove, edit config, or run any
+mutating command until the user states the goal and confirms it. This is the
+same gate as §3.4; the question above is its first instance.
+
+If the user changes the subject or asks a diagnostic question first, answer it
+in Persian, then repeat the invitation once before stopping.
+
+---
+
+## 1. What this is
 
 Termufix is a short-lived rescue channel into a Termux session on the user's
 Android device. Through it you can inspect the device and run non-interactive
 shell commands, typically to install or repair a terminal AI agent.
 
-## Check access
+## 2. Check access
 
 If you have a `termufix` CLI:
 
     termufix state '<session-url>'
 
 - `online`  → proceed to diagnose
-- `offline` → wait ~10 s, retry up to 3 times, then tell the user to keep
-  Termux open or rerun the command
-- `expired` → ask for a fresh session link
+- `offline` → wait ~10 s, retry up to 3 times, then tell the user (in Persian)
+  to keep Termux open or rerun the command
+- `expired` → ask for a fresh session link, in Persian
 
-## Diagnose first (read-only)
+## 3. Diagnose first (read-only)
 
 Only after `online`, run:
 
@@ -1359,43 +1386,46 @@ Only after `online`, run:
       command -v opencode && opencode --version 2>&1 || true
     '
 
-This step changes nothing. No installs, no deletions.
+This step changes nothing. No installs, no deletions. Afterwards, go to §0 and
+send the Persian status message and the invitation question.
 
-## Then ask permission
+## 4. Then ask permission
 
-Summarize findings in plain language. Before any change — install, remove,
-edit config, change repo, write dotfile — name what, why, and approximate cost
-(size, time). Wait for explicit yes.
+Whenever the user names a goal, summarize in Persian what you plan to change —
+install, remove, edit config, change repo, write dotfile — and the approximate
+cost (size, time). Wait for explicit yes. This gate applies to every mutating
+step, not only the first one.
 
-## Execute
+## 5. Execute
 
 - One logical command per `run`. No chaining unrelated steps.
 - `run` is non-interactive, 900 s timeout. Pass `-y` / `--yes`.
 - No background daemons inside a single `run`.
 - On `busy`: wait, check `state`, retry the same step.
-- State intent before each command so the transcript is auditable.
-- On failure, quote stderr. Do not retry blindly.
+- State intent in Persian before each command so the transcript is auditable.
+- On failure, quote stderr. Do not retry blindly. Explain the failure in
+  Persian in one or two sentences before proposing a fix.
 
-## Close
+## 6. Close
 
 When the goal is met:
 
     termufix close '<session-url>'
 
-Tell the user the link is now invalid.
+Tell the user in Persian that the link is now invalid.
 
-## If you have no `termufix` tool
+## 7. If you have no `termufix` tool
 
 Some chat-only agents cannot issue shell commands. Do **not** pretend. Say so
-in one sentence, then act as a **remote copilot**: produce commands the user
-pastes into their Termux window one at a time, and ask them to paste back the
-output. You do not have direct access; the user is your hands.
+in Persian in one sentence, then act as a **remote copilot**: produce commands
+the user pastes into their Termux window one at a time, and ask them to paste
+back the output. You do not have direct access; the user is your hands.
 
 Suggested path: a tool-capable agent (IDE agent, terminal assistant, Google
 AI Studio Builder) where the session URL can be handed to a runner that can
 execute shell.
 
-## Safety — overrides everything else
+## 8. Safety — overrides everything else
 
 - The session URL is a secret. Never paste it into public chats, screenshots,
   gists, or issue trackers.
@@ -1404,8 +1434,9 @@ execute shell.
   transfers, or `sudo` escalation without explicit, specific permission.
 - Do not copy the operator's personal provider keys to the device. Use scoped,
   revocable, per-user keys, or better, the user's own login.
-- If any token appears in a transcript, tell the user to revoke it immediately.
-- Stop on ambiguity. Ask one short question instead of guessing.
+- If any token appears in a transcript, tell the user in Persian to revoke it
+  immediately, and how.
+- Stop on ambiguity. Ask one short question in Persian instead of guessing.
   </script>
 
   <script>
