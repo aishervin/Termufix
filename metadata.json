@@ -1,0 +1,6 @@
+{
+  "name": "SHΞN™𝙵𝙸𝚇 — Termufix",
+  "description": "Termufix — Turn Termux Terminal True. Ephemeral rescue relay and browser console for Termux sessions.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
